@@ -1,0 +1,29 @@
+Texture2D shaderTexture : register(t0);
+SamplerState SampleType : register(s0);
+
+cbuffer renderFactors : register(b0)
+{
+    float Transparent;
+    float3 rev;
+}
+struct PixelInputType
+{
+    float4 position : SV_POSITION;
+	float3 normal   : NORMAL;
+    float2 tex		: TEXCOORD0;
+	float4 depthPosition : TEXCOORD1;
+	float fogFactor : FOG;
+};
+
+float4 PSEntry( PixelInputType input) : SV_Target
+{
+	float depthValue = input.depthPosition.z / input.depthPosition.w;
+	float4 color,color1;
+	float4 fogcolor = {0.0f,0.0f,0.0f,1.0f};
+	color = shaderTexture.Sample(SampleType, input.tex);
+	float remainColor;
+	float x = 0.1f;
+	color = input.fogFactor * color + (1.0 - input.fogFactor) * fogcolor;
+	color.a = Transparent;
+	return color;
+}
