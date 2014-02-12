@@ -83,6 +83,7 @@
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\BoneClass.cpp" />
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\BVClass.cpp" />
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\CloudClass.cpp" />
+    <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\DayTime.cpp" />
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\FrameBuffer.cpp" />
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\OcclusionClass.cpp" />
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\PixelShaderClass.cpp" />
@@ -111,6 +112,7 @@
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\BoneClass.h" />
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\BVClass.h" />
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\CloudClass.h" />
+    <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\DayTime.h" />
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\FrameBuffer.h" />
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\OcclusionClass.h" />
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\PixelShaderClass.h" />

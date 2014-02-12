@@ -15,9 +15,10 @@
 #define CLAY		  7
 #define SKYBOX_DAY    8
 #define SKYBOX_NIGHT  9
-#define WATER		  10
-#define CLOUD		  11
-#define TREE          12
+#define SKYBOX_DAWN   10
+#define WATER		  11
+#define CLOUD		  12
+#define TREE          13
 
 
 class DefinesAndTextures

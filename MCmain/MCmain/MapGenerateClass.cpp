@@ -173,7 +173,5 @@ int MapGenerateClass::GetData(int x,int y,int z)
 //	if (x - tx < 0) printf("x");
 //	if (y - ty < 0) printf("y");
 //	if (z - tz < 0) printf("z");
-	return datas[firstHash].GetBlock(((x%8)+8)%8,
-		((y % 8) + 8) % 8,
-		((z % 8) + 8) % 8);
+	return datas[firstHash].GetBlock(x- tx,y-ty,z-tz);
 }

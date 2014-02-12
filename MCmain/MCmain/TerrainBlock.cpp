@@ -8,14 +8,15 @@ size_t myHash(int x, int y, int z)
 }
 int GetBlockPos(int x)
 {
+//	if (tx < 0)
 	int tx = x / 8;
-	if (tx < 0)
-	if (tx * 8 - x > 0)
-		tx--;
-	if (tx >= 0)
+	if(x < 0)
+		if(x % 8 != 0)
+			tx --;
+/*	if (tx >= 0)
 	if (tx * 8 - x < 0)
 		tx++;
-	return tx;
+*/	return tx;
 }
 TerrainBlock::TerrainBlock()
 {
@@ -50,10 +51,13 @@ int& TerrainBlock::operator[](const int index)
 	return datas[index];
 }
 
-int& TerrainBlock::GetBlock(int x, int y, int z)
+int TerrainBlock::GetBlock(int x, int y, int z)
 {
 //	printf("%d %d %d\n", _x * 8 + x, _y*8+y, _z*8+z);
-	return datas[privateHash(x,y,z)];
+	if (x < 0 || x>8) return 0;
+	if (y < 0 || y>8) return 0;
+	if (z < 0 || z>8) return 0;
+	return datas[privateHash(x, y, z)];
 }
 const bool TerrainBlock::isReady()
 {
@@ -82,7 +86,7 @@ bool TerrainBlock::UpdateOperation(int newx,int newy,int newz)
 	for (int i = 0; i < 8; i++)
 	for (int j = 0; j < 8; j++)
 	{
-		size_t phash = privateHash(i, 0 , j);
+		size_t phash = privateHash(i, (_x+8)%8 , j);
 		datas[phash] = []()->int{
 			return rand() % 3 + 1;
 	}();

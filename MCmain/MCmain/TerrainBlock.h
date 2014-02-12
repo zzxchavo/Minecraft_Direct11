@@ -18,7 +18,7 @@ public:
 	int GetY();
 	int GetZ();
 	int& operator[](const int index);
-	int& GetBlock(int x,int y,int z);
+	int GetBlock(int x,int y,int z);
 	const bool isReady();
 	const bool isEmpty();
 	void SetPlace(int newx,int newy,int newz);

@@ -6,6 +6,10 @@ cbuffer renderFactors : register(b0)
     float Transparent;
     float3 rev;
 }
+cbuffer skyColor : register(b1)
+{
+	float4 skycolor;
+}
 struct PixelInputType
 {
     float4 position : SV_POSITION;
@@ -19,7 +23,7 @@ float4 PSEntry( PixelInputType input) : SV_Target
 {
 	float depthValue = input.depthPosition.z / input.depthPosition.w;
 	float4 color,color1;
-	float4 fogcolor = {0.0f,0.0f,0.0f,1.0f};
+	float4 fogcolor = skycolor;
 	color = shaderTexture.Sample(SampleType, input.tex);
 	float remainColor;
 	float x = 0.1f;

@@ -28,6 +28,7 @@ WorldClass::WorldClass(void)
 	SAFE_CREATE(m_player, PlayerClass);
 	SAFE_CREATE(m_map , MapGenerateClass);
 	SAFE_CREATE(m_rect,Rectangle2DClass);
+	SAFE_CREATE(m_daytime,DayTime);
 //mutexs & threads
 	SAFE_CREATE(t_mutex , mutex);
 	SAFE_CREATE(t_output ,mutex);
@@ -66,7 +67,7 @@ WorldClass::~WorldClass(void)
 	SAFE_DELETE(m_input);
 	SAFE_DELETE(m_block);
 	SAFE_DELETE(m_rect);
-
+	SAFE_DELETE(m_daytime);
 // Delete ShaderClass objects
 	DELETESHADER(basicVS);
 	DELETESHADER(basicPS);
@@ -266,6 +267,12 @@ HRESULT WorldClass::Initialize(ID3D11Device * device,ID3D11DeviceContext * conte
 		MessageBoxA(NULL, "error", "m_rect", MB_OK);
 		return false;
 	}
+	hr = m_daytime->Initialize(device, context);
+	if (FAILED(hr))
+	{
+		MessageBoxA(NULL, "error", "m_daytime", MB_OK);
+		return false;
+	}
 	m_player->SetPosition(device,context,0.0f, 63.0f, 0.0f);
 	
 //	int max_height = (*m_map)[m_map->BKDHash(0, 0)].Max_height + 3;
@@ -317,6 +324,7 @@ void WorldClass::RenderFrame(ID3D11RenderTargetView * rendertarget,
 	ID3D11DeviceContext * context)
 {
 	
+	m_daytime->UpdateTime(device,context);
 	float ClearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
 	context->ClearRenderTargetView(rendertarget, ClearColor);
 	context->ClearDepthStencilView(depthstencil, D3D11_CLEAR_DEPTH, 1.0f, 0);
@@ -372,7 +380,7 @@ void WorldClass::RenderFrame(ID3D11RenderTargetView * rendertarget,
 	D3DXVECTOR3 bone1ret = bone1.GetPosition();
 	D3DXVECTOR3 bone2ret = bone2.GetPosition();
 	D3DXVECTOR3 bone3ret = bone3.GetPosition();
-	printf("\t%f\t%f\t%f\n", m_player->GetCamera()->GetX(), m_player->GetCamera()->GetY(), m_player->GetCamera()->GetZ());
+	printf("%f\t%f\t%f\t%d\n", m_player->GetCamera()->GetX(), m_player->GetCamera()->GetY(), m_player->GetCamera()->GetZ(),m_daytime->GetTime());
 /*	printf("\t%f\t%f\t%f\n\t%f\t%f\t%f\n\t%f\t%f\t%f\n", bone1ret[0], bone1ret[1], bone1ret[2],
 		bone2ret[0], bone2ret[1], bone2ret[2], bone3ret[0], bone3ret[1], bone3ret[2]);
 
@@ -387,11 +395,11 @@ void WorldClass::RenderFrame(ID3D11RenderTargetView * rendertarget,
 		for(int j=-50;j<50;j++)
 		for (int my = -20;my<50;my++)
 		{
-			int tx = (*m_map).GetData(i, my, j);
+			int tx = m_map->GetData(i, my, j);
 //			printf("%d ",tx);
 			if(tx!=0&&m_player->GetCamera()->CheckBox(i,my,j,0.5))
 			{
-				MCTextures[COBBLE_STONE]->PSBindTexture(device,context);
+				MCTextures[tx]->PSBindTexture(device,context);
 				m_block->SetTransparency(device, context, 1.0f);
 				m_block->SetRotation(0.0f, 0.0f, 0.0f, device, context);
 				m_block->SetPosition(i,my,j,device,context);
@@ -403,7 +411,7 @@ void WorldClass::RenderFrame(ID3D11RenderTargetView * rendertarget,
 	context->VSSetShader( skyboxVS->GetVertexShader(), NULL, 0 );
 	context->PSSetShader( skyboxPS->GetPixelShader(), NULL, 0 );
 
-	MCTextures[SKYBOX_DAY]->PSBindTexture(device,context);
+	MCTextures[m_daytime->GetSkyboxTexture()]->PSBindTexture(device,context);
 	m_sky ->Render(device,context);
 	m_sky ->SetPosition(m_player->GetCamera()->GetX(),
 		m_player->GetCamera()->GetY(),
@@ -422,7 +430,7 @@ void WorldClass::RenderFrame(ID3D11RenderTargetView * rendertarget,
 ///DownSampleTexture
 //	m_DownSampleTexure.SetRenderTarget(device, context);
 //	m_DownSampleTexure.ClearRenderTarget(device,context,ClearColor);
-	;
+	
 }
 
 

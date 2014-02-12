@@ -25,6 +25,7 @@
 #include "VertexShaderClass.h"
 #include "PixelShaderClass.h"
 #include "FrameBuffer.h"
+#include "DayTime.h"
 #include "Rectangle2DClass.h"
 #include <vector>
 #include <set>
@@ -92,6 +93,7 @@ private:
 	SkyClass    *m_sky;
 	CloudClass  *m_cloud;
 	BlockClass	*m_block;
+	DayTime		*m_daytime;
 	MapGenerateClass   *m_map;
 	
 	FrameBuffer colorBuffer,m_DownSampleTexure,m_HorizontalBlurTexture,m_VerticalBlurTexture,m_UpSampleTexure;
