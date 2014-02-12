@@ -88,6 +88,7 @@
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\PixelShaderClass.cpp" />
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\Rectangle2DClass.cpp" />
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\SoundClass.cpp" />
+    <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\TerrainBlock.cpp" />
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\TerrainType.cpp" />
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\VertexShaderClass.cpp" />
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\xnaCollision.cpp" />
@@ -115,6 +116,7 @@
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\PixelShaderClass.h" />
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\Rectangle2DClass.h" />
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\SoundClass.h" />
+    <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\TerrainBlock.h" />
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\TerrainType.h" />
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\VertexShaderClass.h" />
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\xnaCollision.h" />

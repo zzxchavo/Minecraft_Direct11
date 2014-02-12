@@ -91,9 +91,9 @@ int PlayerClass::CheckCollision(ID3D11Device* device, ID3D11DeviceContext* conte
 	{
 		for (int i = 0 ; i < 10 ; i++)
 		{
-			if ((*map)[map->BKDHash((int)cbox[i].obox.Center.x,
-				(int)cbox[i].obox.Center.z)].
-				GetData((int)cbox[i].obox.Center.y)!=TEX_EMPTY)
+			if (map->GetData((int)cbox[i].obox.Center.x,
+				(int)cbox[i].obox.Center.y,
+				(int)cbox[i].obox.Center.z)!=TEX_EMPTY)
 				_Sphere.Collision = 
 					XNA::IntersectSphereOrientedBox(&_Sphere.sphere, &cbox[i].obox);
 			if (_Sphere.Collision !=0)

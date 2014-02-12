@@ -5,14 +5,12 @@
 #include<Windows.h>
 #include<stdio.h>
 #include"PointClass.h"
+#include"TerrainBlock.h"
 #include"MapGenerateClass.h"
 #include"DefinesAndTextures.h"
 
 using namespace std;
-class MapBlock
-{
-	;
-};
+
 
 class MapGenerateClass
 {
@@ -88,17 +86,19 @@ public:
 	};
 	bool prandom(float);//按照概率进行随机
 	size_t GetSeed();
-	size_t BKDHash(column *);
-	size_t BKDHash(int,int);
-	size_t BKDHash(int,int,int);
-	void GeneratePosition(int,int);//务必先给column::Max_height初始化
-	void GeneratePosition(unsigned int);
-	void GenerateArea(int,int,int);//给一片区域进行初始化
-	column& operator [](const int);
+//	size_t BKDHash(column *);
+//	size_t BKDHash(int,int);
+//	size_t BKDHash(int,int,int);
+//	void GeneratePosition(int,int);//务必先给column::Max_height初始化
+//	void GeneratePosition(unsigned int);
+//	void GenerateArea(int,int,int);//给一片区域进行初始化
+	TerrainBlock& operator [](const int);
+	int GetData(int x,int y,int z);
 private:
+	int _x, _y, _z;	//人物所在位置/8的中心大块
 	size_t seed;
 	size_t Generator;
 	unsigned int MAX_HASH;
-	column *cols;
+	TerrainBlock datas[5*5*5];
 };
 

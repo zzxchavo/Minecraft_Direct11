@@ -32,17 +32,17 @@ bool OcclusionClass::RenderFrame(float CameraX,float CameraY,float CameraZ,
 	};
 	if (pos[0] == x && pos[1] == y && pos[2] == z)
 		return false;
-	if ((*pmap)[BKDHASH(x + 1, z)].GetData(y) == TEX_EMPTY)
+	if ((*pmap).GetData(x + 1,y, z) == TEX_EMPTY)
 		return true;
-	if ((*pmap)[BKDHASH(x - 1, z)].GetData(y) == TEX_EMPTY)
+	if ((*pmap).GetData(x - 1, y, z) == TEX_EMPTY)
 		return true;
-	if ((*pmap)[BKDHASH(x, z)].GetData(y + 1) == TEX_EMPTY)
+	if ((*pmap).GetData(x , y + 1, z) == TEX_EMPTY)
 		return true;
-	if ((*pmap)[BKDHASH(x, z)].GetData(y - 1) == TEX_EMPTY)
+	if ((*pmap).GetData(x , y - 1, z) == TEX_EMPTY)
 		return true;
-	if ((*pmap)[BKDHASH(x, z + 1)].GetData(y) == TEX_EMPTY)
+	if ((*pmap).GetData(x, y, z + 1) == TEX_EMPTY)
 		return true;
-	if ((*pmap)[BKDHASH(x, z - 1)].GetData(y) == TEX_EMPTY)
+	if ((*pmap).GetData(x,y, z - 1) == TEX_EMPTY)
 		return true;
 	return false;
 }

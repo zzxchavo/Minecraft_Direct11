@@ -84,7 +84,7 @@ void WorldClass::ThreadUpdateMap()
 	while(updateThreadSwitch)
 	{
 		t_mutex->lock();
-		m_map->GenerateArea(0,0,50);
+//		m_map->GenerateArea(0,0,50);
 		t_mutex->unlock();
 	}
 }
@@ -247,7 +247,7 @@ HRESULT WorldClass::Initialize(ID3D11Device * device,ID3D11DeviceContext * conte
 		return false;
 	}
 	m_player->SetStep(0.167f);
-	m_map->GenerateArea(0, 0, 50);
+//	m_map->GenerateArea(0, 0, 50);
 	hr = m_cloud->Initialize(device, context);
 	if (FAILED(hr))
 	{
@@ -385,16 +385,18 @@ void WorldClass::RenderFrame(ID3D11RenderTargetView * rendertarget,
 	m_block->Render(device,context);
 	for(int i=-50;i<50;i++)
 		for(int j=-50;j<50;j++)
+		for (int my = -20;my<50;my++)
 		{
-				size_t tx = (*m_map)[m_map->BKDHash(i,j)].GetData(60);
-				if(tx!=0&&m_player->GetCamera()->CheckBox(i,60,j,0.5))
-				{
-					MCTextures[GRASS_TOP]->PSBindTexture(device,context);
-					m_block->SetTransparency(device, context, 1.0f);
-					m_block->SetRotation(0.0f, 0.0f, 0.0f, device, context);
-					m_block->SetPosition(i,60,j,device,context);
-					context->Draw(36,0);
-				}
+			int tx = (*m_map).GetData(i, my, j);
+//			printf("%d ",tx);
+			if(tx!=0&&m_player->GetCamera()->CheckBox(i,my,j,0.5))
+			{
+				MCTextures[COBBLE_STONE]->PSBindTexture(device,context);
+				m_block->SetTransparency(device, context, 1.0f);
+				m_block->SetRotation(0.0f, 0.0f, 0.0f, device, context);
+				m_block->SetPosition(i,my,j,device,context);
+				context->Draw(36,0);
+			}
 		}
 	TurnOffAlphaRendering(device, context);
 

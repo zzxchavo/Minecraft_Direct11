@@ -7,27 +7,25 @@ MapGenerateClass::MapGenerateClass(void)
 {
 	MAX_HASH = 5000;
 	Generator = rand();
-	cols = NULL;
-	cols = new column[MAX_HASH];
 	seed = 0xfcad12bdfcad12bd;
+	_x = 0;_y = 0;_z = 0;
+	for (int i = -2; i < 3; i++)
+	for (int j = -2; j < 3; j++)
+	for (int k = -2; k < 3; k++)
+		datas[myHash(i + 2,j + 2,k + 2)].SetPlace(_x + i,_y + j,_z + k);
 }
 
 
 MapGenerateClass::~MapGenerateClass(void)
 {
-	if(cols)
-	{
-		delete [] cols;
-		cols = NULL;
-	}
 }
 
 
-MapGenerateClass::column &MapGenerateClass::operator[](const int x)
+TerrainBlock& MapGenerateClass::operator[](const int index)
 {
-	return cols[x];
+	return datas[index];
 }
-
+/*
 size_t MapGenerateClass::BKDHash(column *pt)
 {
 	string HashStr = std::to_string(pt->data[0]);
@@ -139,19 +137,6 @@ void  MapGenerateClass::GeneratePosition(size_t HashCode)
 	cols[HashCode].empty = true;
 }
 
-bool MapGenerateClass::prandom(float _p)//按照概率进行随机
-{
-	_p*=1000.0f;
-	if(rand()%1000 < ((int)_p))
-		return true;
-	return false;
-}
-
-struct bfs_use
-{
-	int x,y;
-};
-
 void MapGenerateClass::GenerateArea(int x,int y,int chunks)
 {
 	for(int i=0;i<100;i++)
@@ -160,4 +145,35 @@ void MapGenerateClass::GenerateArea(int x,int y,int chunks)
 		cols[BKDHash(i-50,j-50)].SetData(60,STONE);
 	}
 	return;
+}
+
+*/
+bool MapGenerateClass::prandom(float _p)//按照概率进行随机
+{
+	_p*=1000.0f;
+	if(rand()%1000 < ((int)_p))
+		return true;
+	return false;
+}
+
+int MapGenerateClass::GetData(int x,int y,int z)
+{
+	int tx,ty,tz;
+	tx = GetBlockPos(x);
+	ty = GetBlockPos(y);
+	tz = GetBlockPos(z);
+//	printf("%d %d %d\n", tx - _x,ty- y,tz-z);
+	if (tx + 2 - _x < 0 || tx + 2 - _x > 4) return 0;
+	if (ty + 2 - _y < 0 || ty + 2 - _y > 4) return 0;
+	if (tz + 2 - _z < 0 || tz + 2 - _z > 4) return 0;
+	size_t firstHash = myHash(tx - _x + 2 ,ty - _y + 2,tz - _z + 2);
+	tx = datas[firstHash].GetX() * 8;
+	ty = datas[firstHash].GetY() * 8;
+	tz = datas[firstHash].GetZ() * 8;
+//	if (x - tx < 0) printf("x");
+//	if (y - ty < 0) printf("y");
+//	if (z - tz < 0) printf("z");
+	return datas[firstHash].GetBlock(((x%8)+8)%8,
+		((y % 8) + 8) % 8,
+		((z % 8) + 8) % 8);
 }
