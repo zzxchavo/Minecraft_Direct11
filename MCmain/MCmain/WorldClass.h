@@ -25,6 +25,7 @@
 #include "VertexShaderClass.h"
 #include "PixelShaderClass.h"
 #include "FrameBuffer.h"
+#include "Render2TextureClass.h"
 #include "DayTime.h"
 #include "Rectangle2DClass.h"
 #include <vector>
@@ -75,10 +76,13 @@ public:
 		ID3D11Device *,
 		ID3D11DeviceContext *);
 	SkyClass * GetSkyBox();
+
+	void RenderScene(ID3D11Device *,
+		ID3D11DeviceContext *);
 private:
 	
-	VertexShaderClass * basicVS,*skyboxVS,*cloudVS;
-	PixelShaderClass  * basicPS,*skyboxPS,*cloudPS;
+	VertexShaderClass * basicVS,*skyboxVS,*cloudVS,*texVS;
+	PixelShaderClass  * basicPS,*skyboxPS,*cloudPS,*texPS;
 
 	int Chunks;
 	int t_playerX,t_playerY,t_playerZ;
@@ -96,7 +100,7 @@ private:
 	DayTime		*m_daytime;
 	MapGenerateClass   *m_map;
 	
-	FrameBuffer colorBuffer,m_DownSampleTexure,m_HorizontalBlurTexture,m_VerticalBlurTexture,m_UpSampleTexure;
+//	FrameBuffer colorBuffer,m_DownSampleTexure,m_HorizontalBlurTexture,m_VerticalBlurTexture,m_UpSampleTexure;
 
 	DefinesAndTextures MCTextures;
 	SoundClass* m_sound;
@@ -109,7 +113,8 @@ private:
 	ID3D11DepthStencilState* DepthStencilEnabled;
 	ID3D11DepthStencilState* DepthStencilDisabled;
 
-	Rectangle2DClass* m_rect;
+	Render2TextureClass colorBuffer, horizon, vertical;
+	Rectangle2DClass* m_rect,*m_screenRect;
 
 	HWND basic_hwnd;
 };

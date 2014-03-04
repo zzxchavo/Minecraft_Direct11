@@ -14,6 +14,9 @@ WorldClass::WorldClass(void)
 
 	CREATE_VERTEX_SHADER(cloudVS);
 	CREATE_PIXEL_SHADER(cloudPS);
+
+	CREATE_VERTEX_SHADER(texVS);
+	CREATE_PIXEL_SHADER(texPS);
 //End shader objects
 
 
@@ -28,7 +31,8 @@ WorldClass::WorldClass(void)
 	SAFE_CREATE(m_player, PlayerClass);
 	SAFE_CREATE(m_map , MapGenerateClass);
 	SAFE_CREATE(m_rect,Rectangle2DClass);
-	SAFE_CREATE(m_daytime,DayTime);
+	SAFE_CREATE(m_screenRect, Rectangle2DClass);
+	SAFE_CREATE(m_daytime, DayTime);
 //mutexs & threads
 	SAFE_CREATE(t_mutex , mutex);
 	SAFE_CREATE(t_output ,mutex);
@@ -67,6 +71,7 @@ WorldClass::~WorldClass(void)
 	SAFE_DELETE(m_input);
 	SAFE_DELETE(m_block);
 	SAFE_DELETE(m_rect);
+	SAFE_DELETE(m_screenRect);
 	SAFE_DELETE(m_daytime);
 // Delete ShaderClass objects
 	DELETESHADER(basicVS);
@@ -126,44 +131,8 @@ HRESULT WorldClass::Initialize(ID3D11Device * device,ID3D11DeviceContext * conte
 	};
 
 	UINT numElements = ARRAYSIZE(fogLayout);
-	hr = basicVS->Initialize(device,context,L"shaders/fog/fog.vs","VSEntry","vs_5_0",fogLayout,numElements);
-	if(FAILED(hr))
-	{
-		MessageBox(NULL,L"VS Failed",L"Error - World Class",MB_OK);
-		return hr;
-	}
-	hr = skyboxVS->Initialize(device,context,L"shaders/skybox/skybox.vs","VSEntry","vs_5_0",fogLayout,numElements);
-	if(FAILED(hr))
-	{
-		MessageBox(NULL,L"VS Failed",L"Error - World Class",MB_OK);
-		return hr;
-	}
-	hr = basicPS->Initialize(device,context,L"shaders/fog/fog.ps","PSEntry","ps_5_0");
-	if(FAILED(hr))
-	{
-		MessageBox(NULL,L"PS Failed",L"Error - World Class",MB_OK);
-		return hr;
-	}
-
-	hr = skyboxPS->Initialize(device,context,L"shaders/skybox/skybox.ps","PSEntry","ps_5_0");
-	if(FAILED(hr))
-	{
-		MessageBox(NULL,L"PS Failed",L"Error - World Class",MB_OK);
-		return hr;
-	}
-	hr = cloudVS->Initialize(device, context, L"shaders/skybox/cloud.vs", "VSEntry","vs_5_0",fogLayout,numElements);
-	if (FAILED(hr))
-	{
-		MessageBox(NULL, L"VS Failed", L"Error - WorldClass", MB_OK);
-		return hr;
-	}
-	hr = cloudPS->Initialize(device, context, L"shaders/skybox/cloud.ps", "PSEntry", "ps_5_0");
-	if (FAILED(hr))
-	{
-		MessageBox(NULL, L"PS Failed", L"Error - WorldClass", MB_OK);
-		return hr;
-	}
-	if(!m_sky->Initialize(device,context))
+	
+	if (!m_sky->Initialize(device, context))
 		return E_FAIL;
 	if(!m_block->Initialize(device,context))
 		return E_FAIL;
@@ -212,11 +181,7 @@ HRESULT WorldClass::Initialize(ID3D11Device * device,ID3D11DeviceContext * conte
 	depthDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
 	depthDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 
-	hr = device->CreateDepthStencilState(&depthDesc,&DepthStencilEnabled);
-	if (FAILED(hr))
-	{
-		MessageBoxA(NULL,"","",MB_OK);
-	}
+	MSG_RETURN(device->CreateDepthStencilState(&depthDesc,&DepthStencilEnabled),"depthstencil");
 
 	ZeroMemory(&depthDesc, sizeof(depthDesc));
 	depthDesc.DepthEnable = false;
@@ -233,7 +198,6 @@ HRESULT WorldClass::Initialize(ID3D11Device * device,ID3D11DeviceContext * conte
 	depthDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
 	depthDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
 	depthDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
-
 	hr = device->CreateDepthStencilState(&depthDesc, &DepthStencilDisabled);
 	if (FAILED(hr))
 	{
@@ -241,38 +205,25 @@ HRESULT WorldClass::Initialize(ID3D11Device * device,ID3D11DeviceContext * conte
 	}
 // objects initialization
 
-	hr = m_player->Initialize(device, context, m_map);
-	if (FAILED(hr))
-	{
-		MessageBoxA(NULL, "error", "player", MB_OK);
-		return false;
-	}
+	MSG_RETURN(m_player->Initialize(device, context, m_map),"player");
 	m_player->SetStep(0.167f);
+//	m_player->SetStep(5.0f);
 //	m_map->GenerateArea(0, 0, 50);
-	hr = m_cloud->Initialize(device, context);
-	if (FAILED(hr))
-	{
-		MessageBoxA(NULL, "error", "cloud", MB_OK);
-		return false;
-	}
-	hr = MCTextures.Initialize(device,context);
-	if (FAILED(hr))
-	{
-		MessageBoxA(NULL, "error", "textures", MB_OK);
-		return false;
-	}
-	hr = m_rect->Initialize(device,context);
-	if (FAILED(hr))
-	{
-		MessageBoxA(NULL, "error", "m_rect", MB_OK);
-		return false;
-	}
-	hr = m_daytime->Initialize(device, context);
-	if (FAILED(hr))
-	{
-		MessageBoxA(NULL, "error", "m_daytime", MB_OK);
-		return false;
-	}
+	MSG_RETURN(basicVS->Initialize(device, context, L"shaders/fog/fog.vs", "VSEntry", "vs_5_0", fogLayout, numElements), "fog.vs");
+	MSG_RETURN(basicPS->Initialize(device, context, L"shaders/fog/fog.ps", "PSEntry", "ps_5_0"), "fog.ps");
+	MSG_RETURN(skyboxVS->Initialize(device, context, L"shaders/skybox/skybox.vs", "VSEntry", "vs_5_0", fogLayout, numElements), "sky.vs");
+	MSG_RETURN(skyboxPS->Initialize(device, context, L"shaders/skybox/skybox.ps", "PSEntry", "ps_5_0"), "sky.ps");
+	MSG_RETURN(cloudVS->Initialize(device, context, L"shaders/skybox/cloud.vs", "VSEntry", "vs_5_0", fogLayout, numElements), "cloud.vs");
+	MSG_RETURN(cloudPS->Initialize(device, context, L"shaders/skybox/cloud.ps", "PSEntry", "ps_5_0"), "cloud.vs");
+	MSG_RETURN(texVS->Initialize(device, context, L"shaders/Tex2D/t2d.vs", "VSEntry", "vs_5_0", fogLayout, numElements), "tex2D.vs");
+	MSG_RETURN(texPS->Initialize(device, context, L"shaders/Tex2D/t2d.ps", "PSEntry", "ps_5_0"), "tex2D.ps");
+	MSG_RETURN(m_cloud->Initialize(device, context), "cloud");
+	MSG_RETURN(MCTextures.Initialize(device, context), "textures");
+	MSG_RETURN(m_rect->Initialize(device, context, 800, 600, 200, 200), "m_rect");
+	MSG_RETURN(m_screenRect->Initialize(device, context, 800, 600, 800, 600), "m_screenRect");
+	MSG_RETURN(m_daytime->Initialize(device, context), "m_daytime");
+	MSG_RETURN(colorBuffer.Initialize(device, context), "buffer");
+
 	m_player->SetPosition(device,context,0.0f, 63.0f, 0.0f);
 	
 //	int max_height = (*m_map)[m_map->BKDHash(0, 0)].Max_height + 3;
@@ -288,12 +239,6 @@ HRESULT WorldClass::Initialize(ID3D11Device * device,ID3D11DeviceContext * conte
 	bone1.SetPosition(0.0f, 65.0f, 0.0f);
 	bone2.SetPosition(0.0f, 65.0f, 10.0f);
 	bone3.SetPosition(0.0f, 65.0f,15.0f);
-	hr = colorBuffer.Initialize(device, context, 800, 600, 0.1f, 600.0f);
-	if (FAILED(hr))
-	{
-		MessageBox(NULL, L"", L"", MB_OK);
-		return hr;
-	}
 	return true;
 }
 
@@ -326,13 +271,6 @@ void WorldClass::RenderFrame(ID3D11RenderTargetView * rendertarget,
 	
 	m_daytime->UpdateTime(device,context);
 	float ClearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
-	context->ClearRenderTargetView(rendertarget, ClearColor);
-	context->ClearDepthStencilView(depthstencil, D3D11_CLEAR_DEPTH, 1.0f, 0);
-	//Set Render Target::Set the render target to be the render to texture
-//	colorBuffer.SetRenderTarget(device, context);
-
-	//clear the render to texture
-//	colorBuffer.ClearRenderTarget(device, context, ClearColor);
 
 	if (m_input->GetKeyState(VK_LEFT)) m_player->GetCamera()->AddRotationY(-1);
 	if(m_input->GetKeyState(VK_RIGHT)) m_player->GetCamera()->AddRotationY( 1);
@@ -362,77 +300,95 @@ void WorldClass::RenderFrame(ID3D11RenderTargetView * rendertarget,
 	}
 	m_player->CheckCollision(device,context,m_map);
 	m_player->GetCamera()->UpdateCamera(device, context);
+	printf("%f\t%f\t%f\t%d\n", m_player->GetCamera()->GetX(), m_player->GetCamera()->GetY(), m_player->GetCamera()->GetZ(), m_daytime->GetTime());
+//Set Render Target::Set the render target to be the render to texture
+	colorBuffer.SetRenderTarget(device, context, depthstencil);
+	colorBuffer.ClearRenderTarget(device, context, depthstencil);
+
+	RenderScene(device, context);
+
+// Reset the render target back to the original back buffer and not the render to texture anymore.
+	context->OMSetRenderTargets(1, &rendertarget, depthstencil);
+
+	context->ClearRenderTargetView(rendertarget, ClearColor);
+	context->ClearDepthStencilView(depthstencil, D3D11_CLEAR_DEPTH, 1.0f, 0);
+
+//	RenderScene(device, context);
+	TurnOffZBuffer(device, context);
+	context->VSSetShader(texVS->GetVertexShader(), NULL, 0);
+	context->PSSetShader(texPS->GetPixelShader(), NULL, 0);
+	context->PSSetShaderResources(0, 1, &(colorBuffer.GetShaderResourceView()));
+	m_screenRect->Render(device, context, 0, 0);
+
+
+	context->VSSetShader(texVS->GetVertexShader(), NULL, 0);
+	context->PSSetShader(texPS->GetPixelShader(), NULL, 0);
+	context->PSSetShaderResources(0, 1, &(colorBuffer.GetShaderResourceView()));
+	m_rect->Render(device, context, 0, 0);
+	TurnOnZBuffer(device, context);
+}
+void WorldClass::RenderScene(ID3D11Device * device,
+	ID3D11DeviceContext * context)
+{
+	context->VSSetShader(skyboxVS->GetVertexShader(), NULL, 0);
+	context->PSSetShader(skyboxPS->GetPixelShader(), NULL, 0);
+
+	MCTextures[m_daytime->GetSkyboxTexture()]->PSBindTexture(device, context);
+	m_sky->Render(device, context);
+	m_sky->SetPosition(m_player->GetCamera()->GetX(),
+		m_player->GetCamera()->GetY(),
+		m_player->GetCamera()->GetZ(),
+		device,
+		context);
+	context->Draw(36, 0);
+
 
 	context->VSSetShader(cloudVS->GetVertexShader(), NULL, 0);
 	context->PSSetShader(cloudPS->GetPixelShader(), NULL, 0);
 
 	TurnOnAlphaRendering(device, context);
-	
-	MCTextures[CLOUD]->PSBindTexture(device,context);
-	m_cloud->Draw(device,context,m_block);
 
-	context->VSSetShader( basicVS->GetVertexShader(), NULL, 0 );
-	context->PSSetShader( basicPS->GetPixelShader(), NULL, 0 );
+	MCTextures[CLOUD]->PSBindTexture(device, context);
+	m_cloud->Draw(device, context, m_block);
 
-//	bone1.SetYawPitchRoll([&]()->float{return ::my += 0.003f; }(), 0.0f, 0.0f);
-	bone2.SetYawPitchRoll([&]()->float{return ::my2 += 0.03f; }(), 0.0f, 0.0f);
+	context->VSSetShader(basicVS->GetVertexShader(), NULL, 0);
+	context->PSSetShader(basicPS->GetPixelShader(), NULL, 0);
+
+	//	bone1.SetYawPitchRoll([&]()->float{return ::my += 0.003f; }(), 0.0f, 0.0f);
+	//	bone2.SetYawPitchRoll([&]()->float{return ::my2 += 0.03f; }(), 0.0f, 0.0f);
 
 	D3DXVECTOR3 bone1ret = bone1.GetPosition();
 	D3DXVECTOR3 bone2ret = bone2.GetPosition();
 	D3DXVECTOR3 bone3ret = bone3.GetPosition();
-	printf("%f\t%f\t%f\t%d\n", m_player->GetCamera()->GetX(), m_player->GetCamera()->GetY(), m_player->GetCamera()->GetZ(),m_daytime->GetTime());
-/*	printf("\t%f\t%f\t%f\n\t%f\t%f\t%f\n\t%f\t%f\t%f\n", bone1ret[0], bone1ret[1], bone1ret[2],
-		bone2ret[0], bone2ret[1], bone2ret[2], bone3ret[0], bone3ret[1], bone3ret[2]);
+	printf("%f\t%f\t%f\t%d\n", m_player->GetCamera()->GetX(), m_player->GetCamera()->GetY(), m_player->GetCamera()->GetZ(), m_daytime->GetTime());
+	//	printf("\t%f\t%f\t%f\n\t%f\t%f\t%f\n\t%f\t%f\t%f\n", bone1ret[0], bone1ret[1], bone1ret[2],
+	//		bone2ret[0], bone2ret[1], bone2ret[2], bone3ret[0], bone3ret[1], bone3ret[2]);
 
-	
-	DrawLine(m_block, device, context, bone1ret[0], bone1ret[1], bone1ret[2],
-		bone2ret[0], bone2ret[1], bone2ret[2]);
-	DrawLine(m_block, device, context, bone2ret[0], bone2ret[1], bone2ret[2],
-		bone3ret[0], bone3ret[1], bone3ret[2]);
-*/
-	m_block->Render(device,context);
-	for(int i=-50;i<50;i++)
-		for(int j=-50;j<50;j++)
-		for (int my = -20;my<50;my++)
+
+	//	DrawLine(m_block, device, context, bone1ret[0], bone1ret[1], bone1ret[2],
+	//		bone2ret[0], bone2ret[1], bone2ret[2]);
+	//	DrawLine(m_block, device, context, bone2ret[0], bone2ret[1], bone2ret[2],
+	//		bone3ret[0], bone3ret[1], bone3ret[2]);
+
+	m_block->Render(device, context);
+	for (int i = -50; i<50; i++)
+	for (int j = -50; j<50; j++)
+	for (int my = -20; my<50; my++)
+	{
+		int tx = m_map->GetData(i, my, j);
+		//			printf("%d ",tx);
+		if (tx != 0 && m_player->GetCamera()->CheckBox(i, my, j, 0.5))
 		{
-			int tx = m_map->GetData(i, my, j);
-//			printf("%d ",tx);
-			if(tx!=0&&m_player->GetCamera()->CheckBox(i,my,j,0.5))
-			{
-				MCTextures[tx]->PSBindTexture(device,context);
-				m_block->SetTransparency(device, context, 1.0f);
-				m_block->SetRotation(0.0f, 0.0f, 0.0f, device, context);
-				m_block->SetPosition(i,my,j,device,context);
-				context->Draw(36,0);
-			}
+			MCTextures[tx]->PSBindTexture(device, context);
+			m_block->SetTransparency(device, context, 1.0f);
+			m_block->SetRotation(0.0f, 0.0f, 0.0f, device, context);
+			m_block->SetPosition(i, my, j, device, context);
+			context->Draw(36, 0);
 		}
+	}
 	TurnOffAlphaRendering(device, context);
-
-	context->VSSetShader( skyboxVS->GetVertexShader(), NULL, 0 );
-	context->PSSetShader( skyboxPS->GetPixelShader(), NULL, 0 );
-
-	MCTextures[m_daytime->GetSkyboxTexture()]->PSBindTexture(device,context);
-	m_sky ->Render(device,context);
-	m_sky ->SetPosition(m_player->GetCamera()->GetX(),
-		m_player->GetCamera()->GetY(),
-		m_player->GetCamera()->GetZ(),
-		device,
-		context);
-	context ->Draw(36, 0);
-	// Reset the render target back to the original back buffer and not the render to texture anymore.
-	context->OMSetRenderTargets(1, &rendertarget, depthstencil);
-	// Reset the viewport back to the original.
-	context->RSSetViewports(1, &viewport);
-	TurnOffZBuffer(device, context);
-	m_rect->Render(device,context);
-	context->Draw(0, 12);
-	TurnOnZBuffer(device, context);
-///DownSampleTexture
-//	m_DownSampleTexure.SetRenderTarget(device, context);
-//	m_DownSampleTexure.ClearRenderTarget(device,context,ClearColor);
-	
+	return ;
 }
-
 
 void WorldClass::TurnOnAlphaRendering(ID3D11Device* device,ID3D11DeviceContext* context)
 {

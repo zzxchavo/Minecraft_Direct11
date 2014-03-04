@@ -3,95 +3,38 @@
 
 Rectangle2DClass::Rectangle2DClass()
 {
-	m_BlockBuffer = NULL;
-	unsigned int vindex[] =
-	{
-		3, 1, 4, 
-		2, 1, 3,
-		3, 4, 1, 
-		2, 3, 1,
-	};
-	float h_sizer = 0.5f;
-	float ver[][3] =
-	{
-		{ h_sizer,  h_sizer, 0 },
-		{-h_sizer,  h_sizer, 0 },
-		{-h_sizer, -h_sizer, 0 },
-		{ h_sizer, -h_sizer, 0 },
-	};
-	unsigned int vnindex[] =
-	{
-		2,2,2,2,2,2,3,3,3,3,3,3,
-	};
-	float nor[][3] =
-	{
-		{ 1.0, 0.0, 0.0 },
-		{ 0.0, 0.0, -1.0 },
-		{ 0.0, 0.0, 1.0 },
-	};
-	unsigned int vtindex[] =
-	{
-		3,1,4,2,1,3,3,4,1,2,3,1,
-	};
-	float tv[][2] =
-	{
-		{ 1.0, 1.0 },
-		{ 0.0, 1.0 },
-		{ 0.0, 0.0 },
-		{ 1.0, 0.0 }
-	};
-	ZeroMemory(pts, sizeof(pts));
-	for (int i = 0; i<12; i++)
-	{
-		memcpy(pts[i].pts._XYZ, ver[vindex[i] - 1], sizeof(PointClass));
-		memcpy(pts[i].normal, nor[vnindex[i] - 1], sizeof(float)* 3);
-		memcpy(pts[i].texture, tv[vtindex[i] - 1], sizeof(float)* 2);
-	}
 }
 
 Rectangle2DClass::~Rectangle2DClass(void)
 {
-	if (m_BlockBuffer)
-	{
-		m_BlockBuffer->Release();
-		m_BlockBuffer = NULL;
-	}
-	if (m_RenderFactors)
-	{
-		m_RenderFactors->Release();
-		m_RenderFactors = NULL;
-	}
-	if (m_BlockProperty)
-	{
-		m_BlockProperty->Release();
-		m_BlockProperty = NULL;
-	}
+	SAFE_RELEASE(m_BlockBuffer);
+	SAFE_RELEASE(m_RenderFactors);
+	SAFE_RELEASE(m_BlockProperty);
+	SAFE_RELEASE(m_indexBuffer);
 }
 
-bool Rectangle2DClass::Initialize(ID3D11Device * device, ID3D11DeviceContext* context)
+bool Rectangle2DClass::Initialize(ID3D11Device * device, ID3D11DeviceContext* context, int screenWidth, int screenHeight, int bitmapWidth, int bitmapHeight)
 {
-	HRESULT hr = NULL;
+	HRESULT hr = S_OK;
+	m_screenWidth = screenWidth;
+	m_screenHeight = screenHeight;
+	m_bitmapWidth = bitmapWidth;
+	m_bitmapHeight = bitmapHeight;
+	m_previousPosX = -1;
+	m_previousPosY = -1;
+
+	hr = InitializeBuffers(device);
+	if (FAILED(hr))
+		return hr;
 
 	scaling[0] = 1.0f;
 	scaling[1] = 1.0f;
 	scaling[2] = 1.0f;
 
 	D3D11_BUFFER_DESC bd;
-
-	ZeroMemory(&bd, sizeof(bd));
-	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(VertexClass)* 36;
-	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	bd.CPUAccessFlags = 0;
-	D3D11_SUBRESOURCE_DATA sb;
-	ZeroMemory(&sb, sizeof(sb));
-	sb.pSysMem = pts;
-	hr = device->CreateBuffer(&bd, &sb, &m_BlockBuffer);
+	hr = InitializeBuffers(device);
 	if (FAILED(hr))
-	{
-		MessageBox(NULL, L"ErrorCreate VertexBuffer", L"Error_BlockClass", MB_OK);
-		return false;
-	}
+		return hr;
 	ZeroMemory(&bd, sizeof(bd));
 	bd.ByteWidth = sizeof(Propertys);
 	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
@@ -121,21 +64,137 @@ bool Rectangle2DClass::Initialize(ID3D11Device * device, ID3D11DeviceContext* co
 	return true;
 }
 
-;
-void Rectangle2DClass::SetTransparency(ID3D11Device *device, ID3D11DeviceContext * context, float trans)
+HRESULT Rectangle2DClass::InitializeBuffers(ID3D11Device* device)
 {
 	HRESULT hr;
+	VertexClass* vertices;
+	ULONG* indices;
+	D3D11_BUFFER_DESC vertexBufferDesc, indexBufferDesc;
+	D3D11_SUBRESOURCE_DATA vertexData, indexData;
+	int i;
+	m_vertexCount = 6;
+	m_indexCount = m_vertexCount;
+	vertices = new VertexClass[m_vertexCount];
+	if (vertices == nullptr)
+		return E_FAIL;
+	memset(vertices, 0, sizeof(VertexClass)*m_vertexCount);
+	indices = new ULONG[m_indexCount];
+	if (indices == nullptr)
+		return E_FAIL;
+	for (i = 0; i < m_indexCount; i++)
+		indices[i] = i;
+	ZeroMemory(&vertexBufferDesc, sizeof(vertexBufferDesc));
+	vertexBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	vertexBufferDesc.ByteWidth = sizeof(VertexClass)*m_vertexCount;
+	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	vertexBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	vertexBufferDesc.MiscFlags = 0;
+	vertexBufferDesc.StructureByteStride = 0;
+	vertexData.pSysMem = vertices;
+	hr = device->CreateBuffer(&vertexBufferDesc, &vertexData, &m_BlockBuffer);
+
+	if (FAILED(hr))
+		return hr;
+
+	ZeroMemory(&indexBufferDesc, sizeof(indexBufferDesc));
+	indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	indexBufferDesc.ByteWidth = sizeof(ULONG)*m_indexCount;
+	indexBufferDesc.CPUAccessFlags = 0;
+	indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+
+	indexData.pSysMem = indices;
+	indexData.SysMemPitch = 0;
+	indexData.SysMemSlicePitch = 0;
+
+	hr = device->CreateBuffer(&indexBufferDesc,&indexData,&m_indexBuffer);
+	if (FAILED(hr))
+		return hr;
+
+	SAFE_DELETE(vertices);
+	SAFE_DELETE(indices);
+}
+
+HRESULT Rectangle2DClass::UpdateBuffers(ID3D11DeviceContext* context,int positionX,int positionY)
+{
+	HRESULT hr;
+	float left, right, top, bottom;
+	VertexClass* vertices;
+	D3D11_MAPPED_SUBRESOURCE mappedResource;
+	VertexClass* verticesPtr;
+	//Y axis is different from that of directX11 while doing 2D rendering .
+	positionY = -positionY;
+	if ((positionX == m_previousPosX) && (positionY == m_previousPosY))
+		return S_OK;
+	m_previousPosX = positionX;
+	m_previousPosY = positionY;
+	left = (float)(m_screenWidth / -2.0f) + (float)positionX;
+	right = left + (float)m_bitmapWidth;
+	top = (float)(m_screenHeight / 2.0f) + (float)positionY;
+	bottom = top - (float)m_bitmapHeight;
+	left = 2.0 * left / m_screenWidth;
+	right = 2.0 * right / m_screenWidth;
+	top = 2.0 * top / m_screenHeight;
+	bottom = 2.0 * bottom / m_screenHeight;
+	vertices = new VertexClass[m_vertexCount];
+	if (vertices == NULL) return E_FAIL;
+	ZeroMemory(vertices, sizeof(vertices));
+	vertices[0].pts._XYZ[0] = left;
+	vertices[0].pts._XYZ[1] = top;
+	vertices[0].pts._XYZ[2] = 0.0f;
+	vertices[0].texture[0] = 0.0f;
+	vertices[0].texture[1] = 0.0f;
+
+	vertices[1].pts._XYZ[0] = right;
+	vertices[1].pts._XYZ[1] = bottom;
+	vertices[1].pts._XYZ[2] = 0.0f;
+	vertices[1].texture[0] = 1.0f;
+	vertices[1].texture[1] = 1.0f;
+
+	vertices[2].pts._XYZ[0] = left;
+	vertices[2].pts._XYZ[1] = bottom;
+	vertices[2].pts._XYZ[2] = 0.0f;
+	vertices[2].texture[0] = 0.0f;
+	vertices[2].texture[1] = 1.0f;
+//第二个三角
+	vertices[3].pts._XYZ[0] = left;
+	vertices[3].pts._XYZ[1] = top;
+	vertices[3].pts._XYZ[2] = 0.0f;
+	vertices[3].texture[0] = 0.0f;
+	vertices[3].texture[1] = 0.0f;
+
+	vertices[4].pts._XYZ[0] = right;
+	vertices[4].pts._XYZ[1] = top;
+	vertices[4].pts._XYZ[2] = 0.0f;
+	vertices[4].texture[0] = 1.0f;
+	vertices[4].texture[1] = 0.0f;
+
+	vertices[5].pts._XYZ[0] = right;
+	vertices[5].pts._XYZ[1] = bottom;
+	vertices[5].pts._XYZ[2] = 0.0f;
+	vertices[5].texture[0] = 1.0f;
+	vertices[5].texture[1] = 1.0f;
+	hr = context->Map(m_BlockBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	if (FAILED(hr)) 
+		return hr;
+	verticesPtr = (VertexClass*) mappedResource.pData;
+	memcpy(verticesPtr, (void*)vertices, (sizeof(VertexClass)*m_vertexCount));
+	context->Unmap(m_BlockBuffer, 0);
+	SAFE_DELETE(vertices); 
+	return hr;
+}
+void Rectangle2DClass::SetTransparency(ID3D11Device *device, ID3D11DeviceContext * context, float trans)
+{
 	factors.transparent = trans;
 	D3D11_MAPPED_SUBRESOURCE myresource;
 	//设置透明度等等渲染参数
-	hr = context->Map(m_RenderFactors, 0, D3D11_MAP_WRITE_DISCARD, 0, &myresource);
+	context->Map(m_RenderFactors, 0, D3D11_MAP_WRITE_DISCARD, 0, &myresource);
 	Factors *dptr2 = (Factors *)myresource.pData;
 	*dptr2 = factors;
 	context->Unmap(m_RenderFactors, 0);
 	context->PSSetConstantBuffers(0, 1, &m_RenderFactors);
-	return;
+	return ;
 }
-void Rectangle2DClass::Render(ID3D11Device *device, ID3D11DeviceContext * context)
+void Rectangle2DClass::Render(ID3D11Device *device, ID3D11DeviceContext * context,int positionX,int positionY)
 {
 	HRESULT hr;
 	UINT stride = sizeof(VertexClass);
@@ -156,10 +215,13 @@ void Rectangle2DClass::Render(ID3D11Device *device, ID3D11DeviceContext * contex
 	context->VSSetConstantBuffers(2, 1, &m_BlockProperty);
 
 	SetTransparency(device, context, factors.transparent);
-
+	hr = UpdateBuffers(context, positionX, positionY);
+	if (FAILED(hr))
+		return ;
 	context->IASetVertexBuffers(0, 1, &m_BlockBuffer, &stride, &offset);
+	context->IASetIndexBuffer(m_indexBuffer, DXGI_FORMAT_R32_UINT, 0);
 	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	context->Draw(36, 0);
+	context->DrawIndexed(m_indexCount, 0, 0);
 }
 
 void Rectangle2DClass::SetPosition(float _x, float _y, float _z, ID3D11Device *device, ID3D11DeviceContext * context)

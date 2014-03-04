@@ -131,7 +131,6 @@ bool BlockClass::Initialize(ID3D11Device * device,ID3D11DeviceContext* context)
 	return true;
 }
 
-;
 void BlockClass::SetTransparency(ID3D11Device *device,ID3D11DeviceContext * context,float trans)
 {
 	HRESULT hr;

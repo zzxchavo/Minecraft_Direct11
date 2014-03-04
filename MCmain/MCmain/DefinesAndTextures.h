@@ -58,3 +58,8 @@ if (x)\
 
 #define SAFE_CREATE(varPtr,type) varPtr = nullptr;\
 	varPtr = new type;
+
+#define MSG_RETURN(var,errormsg)	if(FAILED(var)){\
+	MessageBoxA(NULL, errormsg, "error", MB_OK); \
+	return E_FAIL; \
+}
