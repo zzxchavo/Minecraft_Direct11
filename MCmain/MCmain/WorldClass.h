@@ -81,8 +81,8 @@ public:
 		ID3D11DeviceContext *);
 private:
 	
-	VertexShaderClass * basicVS,*skyboxVS,*cloudVS,*texVS;
-	PixelShaderClass  * basicPS,*skyboxPS,*cloudPS,*texPS;
+	VertexShaderClass * basicVS,*skyboxVS,*cloudVS,*texVS,*horizontalVS,*verticalVS;
+	PixelShaderClass  * basicPS,*skyboxPS,*cloudPS,*texPS,*horizontalPS,*verticalPS;
 
 	int Chunks;
 	int t_playerX,t_playerY,t_playerZ;

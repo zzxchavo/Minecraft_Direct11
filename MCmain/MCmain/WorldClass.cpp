@@ -17,6 +17,12 @@ WorldClass::WorldClass(void)
 
 	CREATE_VERTEX_SHADER(texVS);
 	CREATE_PIXEL_SHADER(texPS);
+
+	CREATE_VERTEX_SHADER(horizontalVS);
+	CREATE_PIXEL_SHADER(horizontalPS);
+
+	CREATE_VERTEX_SHADER(verticalVS);
+	CREATE_PIXEL_SHADER(verticalPS);
 //End shader objects
 
 
@@ -82,6 +88,12 @@ WorldClass::~WorldClass(void)
 
 	DELETESHADER(cloudVS);
 	DELETESHADER(cloudPS);
+
+	DELETESHADER(horizontalVS);
+	DELETESHADER(horizontalPS);
+
+	DELETESHADER(verticalVS);
+	DELETESHADER(verticalPS);
 //End
 }
 
@@ -127,7 +139,7 @@ HRESULT WorldClass::Initialize(ID3D11Device * device,ID3D11DeviceContext * conte
     {
         { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
         { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-        { "TEXCOORD", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+        { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
 
 	UINT numElements = ARRAYSIZE(fogLayout);
@@ -217,6 +229,11 @@ HRESULT WorldClass::Initialize(ID3D11Device * device,ID3D11DeviceContext * conte
 	MSG_RETURN(cloudPS->Initialize(device, context, L"shaders/skybox/cloud.ps", "PSEntry", "ps_5_0"), "cloud.vs");
 	MSG_RETURN(texVS->Initialize(device, context, L"shaders/Tex2D/t2d.vs", "VSEntry", "vs_5_0", fogLayout, numElements), "tex2D.vs");
 	MSG_RETURN(texPS->Initialize(device, context, L"shaders/Tex2D/t2d.ps", "PSEntry", "ps_5_0"), "tex2D.ps");
+	MSG_RETURN(horizontalVS->Initialize(device, context, L"shaders/Blur/horizontal.vs", "VSEntry", "vs_5_0",fogLayout,numElements), "horizontal.vs");
+	MSG_RETURN(horizontalPS->Initialize(device, context, L"shaders/Blur/horizontal.ps", "PSEntry", "ps_5_0"), "horizontal.ps");
+	MSG_RETURN(verticalVS->Initialize(device, context, L"shaders/Blur/vertical.vs", "VSEntry", "vs_5_0", fogLayout, numElements), "vertical.vs");
+	MSG_RETURN(verticalPS->Initialize(device, context, L"shaders/Blur/vertical.ps", "PSEntry", "ps_5_0"), "vertical.ps");
+
 	MSG_RETURN(m_cloud->Initialize(device, context), "cloud");
 	MSG_RETURN(MCTextures.Initialize(device, context), "textures");
 	MSG_RETURN(m_rect->Initialize(device, context, 800, 600, 200, 200), "m_rect");
@@ -307,16 +324,29 @@ void WorldClass::RenderFrame(ID3D11RenderTargetView * rendertarget,
 
 	RenderScene(device, context);
 
+	horizon.SetRenderTarget(device, context, depthstencil);
+	horizon.ClearRenderTarget(device,context,depthstencil);
+
+	TurnOffZBuffer(device, context);
+	context->VSSetShader(horizontalVS->GetVertexShader(), NULL, 0);
+	context->PSSetShader(horizontalPS->GetPixelShader(), NULL, 0);
+	context->PSSetShaderResources(0, 1, &(colorBuffer.GetShaderResourceView()));
+	m_screenRect->Render(device, context, 0, 0);
+
 // Reset the render target back to the original back buffer and not the render to texture anymore.
 	context->OMSetRenderTargets(1, &rendertarget, depthstencil);
 
 	context->ClearRenderTargetView(rendertarget, ClearColor);
 	context->ClearDepthStencilView(depthstencil, D3D11_CLEAR_DEPTH, 1.0f, 0);
 
+	context->VSSetShader(verticalVS->GetVertexShader(), NULL, 0);
+	context->PSSetShader(verticalPS->GetPixelShader(), NULL, 0);
+	context->PSSetShaderResources(0, 1, &(horizon.GetShaderResourceView()));
+	m_screenRect->Render(device, context, 0, 0);
+
 //	RenderScene(device, context);
-	TurnOffZBuffer(device, context);
-	context->VSSetShader(texVS->GetVertexShader(), NULL, 0);
-	context->PSSetShader(texPS->GetPixelShader(), NULL, 0);
+	context->VSSetShader(horizontalVS->GetVertexShader(), NULL, 0);
+	context->PSSetShader(horizontalPS->GetPixelShader(), NULL, 0);
 	context->PSSetShaderResources(0, 1, &(colorBuffer.GetShaderResourceView()));
 	m_screenRect->Render(device, context, 0, 0);
 
