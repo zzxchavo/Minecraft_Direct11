@@ -23,6 +23,10 @@ WorldClass::WorldClass(void)
 
 	CREATE_VERTEX_SHADER(verticalVS);
 	CREATE_PIXEL_SHADER(verticalPS);
+
+
+	CREATE_VERTEX_SHADER(guiVS);
+	CREATE_PIXEL_SHADER(guiPS);
 //End shader objects
 
 
@@ -31,7 +35,7 @@ WorldClass::WorldClass(void)
 	SAFE_CREATE(m_sky, SkyClass(580.0f));
 	SAFE_CREATE(m_cloud , CloudClass);
 //End 
-
+	SAFE_CREATE(btn,ButtonClass(200,200,100,30));
 	SAFE_CREATE(m_sound , SoundClass);
 	SAFE_CREATE(m_input, InputClass);
 	SAFE_CREATE(m_player, PlayerClass);
@@ -47,6 +51,7 @@ WorldClass::WorldClass(void)
 //End thread operation.
 //Ohter initialize operations.
 
+	skyRotation = 0.0f;
 	Chunks = 50;
 	t_playerX = 0;
 	t_playerY = 0;
@@ -79,6 +84,9 @@ WorldClass::~WorldClass(void)
 	SAFE_DELETE(m_rect);
 	SAFE_DELETE(m_screenRect);
 	SAFE_DELETE(m_daytime);
+
+
+	SAFE_DELETE(btn);
 // Delete ShaderClass objects
 	DELETESHADER(basicVS);
 	DELETESHADER(basicPS);
@@ -94,6 +102,9 @@ WorldClass::~WorldClass(void)
 
 	DELETESHADER(verticalVS);
 	DELETESHADER(verticalPS);
+
+	DELETESHADER(guiVS);
+	DELETESHADER(guiPS);
 //End
 }
 
@@ -233,9 +244,11 @@ HRESULT WorldClass::Initialize(ID3D11Device * device,ID3D11DeviceContext * conte
 	MSG_RETURN(horizontalPS->Initialize(device, context, L"shaders/Blur/horizontal.ps", "PSEntry", "ps_5_0"), "horizontal.ps");
 	MSG_RETURN(verticalVS->Initialize(device, context, L"shaders/Blur/vertical.vs", "VSEntry", "vs_5_0", fogLayout, numElements), "vertical.vs");
 	MSG_RETURN(verticalPS->Initialize(device, context, L"shaders/Blur/vertical.ps", "PSEntry", "ps_5_0"), "vertical.ps");
+	MSG_RETURN(guiVS->Initialize(device, context, L"shaders/GUI/button.vs", "VSEntry", "vs_5_0", fogLayout, numElements), "vertical.vs");
+	MSG_RETURN(guiPS->Initialize(device, context, L"shaders/GUI/button.ps", "PSEntry", "ps_5_0"), "vertical.ps");
 
 	MSG_RETURN(m_cloud->Initialize(device, context), "cloud");
-	MSG_RETURN(MCTextures.Initialize(device, context), "textures");
+	MSG_RETURN(DefinesAndTextures::GetInstance()->Initialize(device, context), "textures");
 	MSG_RETURN(m_rect->Initialize(device, context, 800, 600, 200, 200), "m_rect");
 	MSG_RETURN(m_screenRect->Initialize(device, context, 800, 600, 800, 600), "m_screenRect");
 	MSG_RETURN(m_daytime->Initialize(device, context), "m_daytime");
@@ -256,6 +269,8 @@ HRESULT WorldClass::Initialize(ID3D11Device * device,ID3D11DeviceContext * conte
 	bone1.SetPosition(0.0f, 65.0f, 0.0f);
 	bone2.SetPosition(0.0f, 65.0f, 10.0f);
 	bone3.SetPosition(0.0f, 65.0f,15.0f);
+
+	btn->Initialize(device, context);
 	return true;
 }
 
@@ -355,6 +370,11 @@ void WorldClass::RenderFrame(ID3D11RenderTargetView * rendertarget,
 	context->PSSetShader(texPS->GetPixelShader(), NULL, 0);
 	context->PSSetShaderResources(0, 1, &(colorBuffer.GetShaderResourceView()));
 	m_rect->Render(device, context, 0, 0);
+	
+
+	context->VSSetShader(guiVS->GetVertexShader(), NULL, 0);
+	context->PSSetShader(guiPS->GetPixelShader(), NULL, 0);
+	btn->Render(device, context);
 	TurnOnZBuffer(device, context);
 }
 void WorldClass::RenderScene(ID3D11Device * device,
@@ -370,8 +390,10 @@ void WorldClass::RenderScene(ID3D11Device * device,
 		m_player->GetCamera()->GetZ(),
 		device,
 		context);
+	m_sky->SetRotation(0.0f, skyRotation, skyRotation, device, context);
+	skyRotation -= 0.0001f;
+	if(skyRotation < -360.0f) skyRotation += 360.0f;
 	context->Draw(36, 0);
-
 
 	context->VSSetShader(cloudVS->GetVertexShader(), NULL, 0);
 	context->PSSetShader(cloudPS->GetPixelShader(), NULL, 0);

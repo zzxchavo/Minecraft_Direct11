@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include "VertexClass.h"
 #include "OBBClass.h"
-#include "DefinesAndTextures.h"
+#include "Defines.h"
 
 class Rectangle2DClass
 {
@@ -14,7 +14,7 @@ public:
 	~Rectangle2DClass(void);
 	bool Initialize(ID3D11Device *, ID3D11DeviceContext *, int screenWidth, int screenHeight, int bitmapWidth, int bitmapHeight);
 	HRESULT InitializeBuffers(ID3D11Device* device);
-	HRESULT UpdateBuffers(ID3D11DeviceContext* context,int posX,int posY);
+	HRESULT UpdateBuffers(ID3D11DeviceContext* context,int posX,int posY,int wid = -1,int hei = -1);
 	HRESULT RenderBuffers(ID3D11DeviceContext* context);
 	void Render(ID3D11Device *, ID3D11DeviceContext*,int,int);
 	void SetPosition(float, float, float, ID3D11Device *, ID3D11DeviceContext*);
@@ -48,4 +48,5 @@ private:
 	int m_screenWidth, m_screenHeight;
 	int m_bitmapWidth, m_bitmapHeight;
 	int m_previousPosX, m_previousPosY;
+	int m_previousWidth, m_previousHeight;
 };

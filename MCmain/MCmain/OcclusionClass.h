@@ -1,6 +1,6 @@
 #pragma once
 #include"MapGenerateClass.h"
-#include"DefinesAndTextures.h"
+#include"Defines.h"
 #include<D3DX10math.h>
 
 #define BKDHASH(a,b) ((pmap)->BKDHash((a),(b)))

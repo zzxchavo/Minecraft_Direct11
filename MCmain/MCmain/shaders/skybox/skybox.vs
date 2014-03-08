@@ -9,6 +9,8 @@ cbuffer  Matrixs : register(b1)
 cbuffer ObjectMatrix : register(b2)
 {
 	matrix Translation;
+	matrix Scaling;
+	matrix Rotation;
 }
 struct VSInputType
 {
@@ -31,9 +33,11 @@ PSInputType VSEntry(VSInputType input)
 	output.position = input.position;
 	output.normal	= input.normal;
 	output.tex		= input.tex;
+//	output.position = mul(output.position,Scaling);
+	output.position = mul(output.position,Rotation);
 	output.position = mul(output.position,Translation);
-//    output.position = mul(output.position,WorldMatrix);
-    output.position = mul(output.position,ViewMatrix);
-    output.position = mul(output.position,ProjectionMatrix);
+//output.position = mul(output.position,WorldMatrix);
+	output.position = mul(output.position,ViewMatrix);
+	output.position = mul(output.position,ProjectionMatrix);
 	return output;
 }

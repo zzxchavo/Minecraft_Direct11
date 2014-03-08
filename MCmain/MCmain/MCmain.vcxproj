@@ -81,10 +81,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\BoneClass.cpp" />
+    <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\ButtonClass.cpp" />
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\BVClass.cpp" />
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\CloudClass.cpp" />
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\DayTime.cpp" />
-    <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\FrameBuffer.cpp" />
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\OcclusionClass.cpp" />
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\PixelShaderClass.cpp" />
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\Rectangle2DClass.cpp" />
@@ -93,11 +93,12 @@
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\TerrainBlock.cpp" />
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\TerrainType.cpp" />
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\VertexShaderClass.cpp" />
+    <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\WidgetClass.cpp" />
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\xnaCollision.cpp" />
     <ClCompile Include="OBBClass.cpp" />
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\BlockClass.cpp" />
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\CameraClass.cpp" />
-    <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\DefinesAndTextures.cpp" />
+    <ClCompile Include="MCTextures.cpp" />
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\FrustumClass.cpp" />
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\InputClass.cpp" />
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\LightClass.cpp" />
@@ -111,10 +112,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\BoneClass.h" />
+    <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\ButtonClass.h" />
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\BVClass.h" />
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\CloudClass.h" />
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\DayTime.h" />
-    <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\FrameBuffer.h" />
+    <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\Defines.h" />
+    <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\GUI.h" />
+    <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\Headers.h" />
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\OcclusionClass.h" />
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\PixelShaderClass.h" />
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\Rectangle2DClass.h" />
@@ -123,11 +127,12 @@
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\TerrainBlock.h" />
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\TerrainType.h" />
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\VertexShaderClass.h" />
+    <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\WidgetClass.h" />
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\xnaCollision.h" />
     <ClInclude Include="OBBClass.h" />
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\BlockClass.h" />
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\CameraClass.h" />
-    <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\DefinesAndTextures.h" />
+    <ClInclude Include="MCTextures.h" />
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\FrustumClass.h" />
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\InputClass.h" />
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\LightClass.h" />

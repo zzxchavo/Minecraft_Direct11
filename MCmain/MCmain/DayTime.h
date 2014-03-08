@@ -1,7 +1,16 @@
-#pragma 
+#pragma once
+#ifndef DAY_TIME
+#define DAY_TIME
+#endif
+
+#ifdef DAY_TIME
+
 #include<time.h>
 #include<stdlib.h>
-#include"DefinesAndTextures.h"
+#include<D3D11.h>
+#include<D3DX11.h>
+#include"MCTextures.h"
+
 #define MAX_TIME 240
 
 class DayTime
@@ -27,3 +36,4 @@ private:
 	};
 };
 
+#endif
