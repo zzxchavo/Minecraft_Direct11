@@ -5,6 +5,34 @@ BoneClass bone1, bone2 , bone3;
 
 WorldClass::WorldClass(void)
 {
+<<<<<<< HEAD
+=======
+//shader objcets
+	CREATE_VERTEX_SHADER(skyboxVS);
+	CREATE_PIXEL_SHADER(skyboxPS);
+
+	CREATE_VERTEX_SHADER(basicVS);
+	CREATE_PIXEL_SHADER(basicPS); 
+
+	CREATE_VERTEX_SHADER(cloudVS);
+	CREATE_PIXEL_SHADER(cloudPS);
+
+	CREATE_VERTEX_SHADER(texVS);
+	CREATE_PIXEL_SHADER(texPS);
+
+	CREATE_VERTEX_SHADER(horizontalVS);
+	CREATE_PIXEL_SHADER(horizontalPS);
+
+	CREATE_VERTEX_SHADER(verticalVS);
+	CREATE_PIXEL_SHADER(verticalPS);
+
+
+	CREATE_VERTEX_SHADER(guiVS);
+	CREATE_PIXEL_SHADER(guiPS);
+//End shader objects
+
+
+>>>>>>> 63f768f2ac038be9c0895581b94580b55bbf5bd0
 //BlockClass-based object
 	SAFE_CREATE(m_block ,BlockClass);
 	SAFE_CREATE(m_sky, SkyClass(580.0f));
@@ -25,6 +53,10 @@ WorldClass::WorldClass(void)
 	OptimizeThreadSwitch = true;
 //End thread operation.
 //Ohter initialize operations.
+<<<<<<< HEAD
+=======
+
+>>>>>>> 63f768f2ac038be9c0895581b94580b55bbf5bd0
 	skyRotation = 0.0f;
 	Chunks = 50;
 	t_playerX = 0;
@@ -58,10 +90,35 @@ WorldClass::~WorldClass(void)
 	SAFE_DELETE(m_rect);
 	SAFE_DELETE(m_screenRect);
 	SAFE_DELETE(m_daytime);
+<<<<<<< HEAD
 
 	SAFE_DELETE(btn);
 // Delete ShaderClass objects
 	SHADERMANAGER.ShutDown();
+=======
+
+
+	SAFE_DELETE(btn);
+// Delete ShaderClass objects
+	DELETESHADER(basicVS);
+	DELETESHADER(basicPS);
+
+	DELETESHADER(skyboxVS);
+	DELETESHADER(skyboxPS);
+
+	DELETESHADER(cloudVS);
+	DELETESHADER(cloudPS);
+
+	DELETESHADER(horizontalVS);
+	DELETESHADER(horizontalPS);
+
+	DELETESHADER(verticalVS);
+	DELETESHADER(verticalPS);
+
+	DELETESHADER(guiVS);
+	DELETESHADER(guiPS);
+//End
+>>>>>>> 63f768f2ac038be9c0895581b94580b55bbf5bd0
 }
 
 void WorldClass::ThreadUpdateMap()
@@ -181,6 +238,7 @@ HRESULT WorldClass::Initialize(ID3D11Device* device,ID3D11DeviceContext* context
 	m_player->SetStep(0.167f);
 //	m_player->SetStep(5.0f);
 //	m_map->GenerateArea(0, 0, 50);
+<<<<<<< HEAD
 	if (FAILED(m_sky->Initialize(device, context)))
 		return E_FAIL;
 	if (FAILED(m_block->Initialize(device, context)))
@@ -211,6 +269,22 @@ HRESULT WorldClass::Initialize(ID3D11Device* device,ID3D11DeviceContext* context
 //	MSG_RETURN(guiPS->Initialize(device, context, L"shaders/GUI/button.ps", "PSEntry", "ps_5_0"), "vertical.ps");
 //	MSG_RETURN(colorshakeVS->Initialize(device, context, L"shaders/colorshake/colorshake.vs", "VSEntry", "vs_5_0", fogLayout, numElements), "colorshake.vs");
 //	MSG_RETURN(colorshakePS->Initialize(device, context, L"shaders/colorshake/colorshake.ps", "PSEntry", "ps_5_0"), "colorshake.ps");
+=======
+	MSG_RETURN(basicVS->Initialize(device, context, L"shaders/fog/fog.vs", "VSEntry", "vs_5_0", fogLayout, numElements), "fog.vs");
+	MSG_RETURN(basicPS->Initialize(device, context, L"shaders/fog/fog.ps", "PSEntry", "ps_5_0"), "fog.ps");
+	MSG_RETURN(skyboxVS->Initialize(device, context, L"shaders/skybox/skybox.vs", "VSEntry", "vs_5_0", fogLayout, numElements), "sky.vs");
+	MSG_RETURN(skyboxPS->Initialize(device, context, L"shaders/skybox/skybox.ps", "PSEntry", "ps_5_0"), "sky.ps");
+	MSG_RETURN(cloudVS->Initialize(device, context, L"shaders/skybox/cloud.vs", "VSEntry", "vs_5_0", fogLayout, numElements), "cloud.vs");
+	MSG_RETURN(cloudPS->Initialize(device, context, L"shaders/skybox/cloud.ps", "PSEntry", "ps_5_0"), "cloud.vs");
+	MSG_RETURN(texVS->Initialize(device, context, L"shaders/Tex2D/t2d.vs", "VSEntry", "vs_5_0", fogLayout, numElements), "tex2D.vs");
+	MSG_RETURN(texPS->Initialize(device, context, L"shaders/Tex2D/t2d.ps", "PSEntry", "ps_5_0"), "tex2D.ps");
+	MSG_RETURN(horizontalVS->Initialize(device, context, L"shaders/Blur/horizontal.vs", "VSEntry", "vs_5_0",fogLayout,numElements), "horizontal.vs");
+	MSG_RETURN(horizontalPS->Initialize(device, context, L"shaders/Blur/horizontal.ps", "PSEntry", "ps_5_0"), "horizontal.ps");
+	MSG_RETURN(verticalVS->Initialize(device, context, L"shaders/Blur/vertical.vs", "VSEntry", "vs_5_0", fogLayout, numElements), "vertical.vs");
+	MSG_RETURN(verticalPS->Initialize(device, context, L"shaders/Blur/vertical.ps", "PSEntry", "ps_5_0"), "vertical.ps");
+	MSG_RETURN(guiVS->Initialize(device, context, L"shaders/GUI/button.vs", "VSEntry", "vs_5_0", fogLayout, numElements), "vertical.vs");
+	MSG_RETURN(guiPS->Initialize(device, context, L"shaders/GUI/button.ps", "PSEntry", "ps_5_0"), "vertical.ps");
+>>>>>>> 63f768f2ac038be9c0895581b94580b55bbf5bd0
 
 	MSG_RETURN(m_cloud->Initialize(device, context), "cloud");
 	MSG_RETURN(DefinesAndTextures::GetInstance()->Initialize(device, context), "textures");
@@ -233,7 +307,10 @@ HRESULT WorldClass::Initialize(ID3D11Device* device,ID3D11DeviceContext* context
 	bone3.SetPosition(0.0f, 65.0f,15.0f);
 
 	btn->Initialize(device, context);
+<<<<<<< HEAD
 	printf("Jobs Done!!!!!!!!!!!!\n");
+=======
+>>>>>>> 63f768f2ac038be9c0895581b94580b55bbf5bd0
 	return true;
 }
 
@@ -335,9 +412,15 @@ void WorldClass::RenderFrame(ID3D11RenderTargetView * rendertarget,
 	m_rect->Render(device, context, 0, 0);
 	
 
+<<<<<<< HEAD
 //	context->VSSetShader(guiVS->GetVertexShader(), NULL, 0);
 //	context->PSSetShader(guiPS->GetPixelShader(), NULL, 0);
 //	btn->Render(device, context);
+=======
+	context->VSSetShader(guiVS->GetVertexShader(), NULL, 0);
+	context->PSSetShader(guiPS->GetPixelShader(), NULL, 0);
+	btn->Render(device, context);
+>>>>>>> 63f768f2ac038be9c0895581b94580b55bbf5bd0
 	TurnOnZBuffer(device, context);
 }
 void WorldClass::RenderScene(ID3D11Device * device,
@@ -358,9 +441,15 @@ void WorldClass::RenderScene(ID3D11Device * device,
 	if(skyRotation < -360.0f) skyRotation += 360.0f;
 	context->Draw(36, 0);
 
+<<<<<<< HEAD
 //	context->VSSetShader(cloudVS->GetVertexShader(), NULL, 0);
 //	context->PSSetShader(cloudPS->GetPixelShader(), NULL, 0);
 	SHADERMANAGER.UseShader(device, context, "cloud");
+=======
+	context->VSSetShader(cloudVS->GetVertexShader(), NULL, 0);
+	context->PSSetShader(cloudPS->GetPixelShader(), NULL, 0);
+
+>>>>>>> 63f768f2ac038be9c0895581b94580b55bbf5bd0
 	TurnOnAlphaRendering(device, context);
 
 	MCTextures[CLOUD]->PSBindTexture(device, context);

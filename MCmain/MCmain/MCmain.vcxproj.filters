@@ -107,6 +107,7 @@
     </ClCompile>
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\TerrainBlock.cpp">
       <Filter>源文件\Logic</Filter>
+<<<<<<< HEAD
     </ClCompile>
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\TerrainType.cpp">
       <Filter>源文件\Logic</Filter>
@@ -128,6 +129,20 @@
     </ClCompile>
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\Defines.cpp">
       <Filter>源文件</Filter>
+=======
+    </ClCompile>
+    <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\TerrainType.cpp">
+      <Filter>源文件\Logic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\Rectangle2DClass.cpp">
+      <Filter>源文件\Basic</Filter>
+    </ClCompile>
+    <ClCompile Include="MCTextures.cpp">
+      <Filter>源文件\Basic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\ButtonClass.cpp">
+      <Filter>源文件\GUI</Filter>
+>>>>>>> 63f768f2ac038be9c0895581b94580b55bbf5bd0
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -204,11 +219,19 @@
       <Filter>头文件\Logic</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\Rectangle2DClass.h">
+<<<<<<< HEAD
       <Filter>头文件\Basic</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\Render2TextureClass.h">
       <Filter>头文件\Basic</Filter>
     </ClInclude>
+=======
+      <Filter>头文件\Basic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\Render2TextureClass.h">
+      <Filter>头文件\Basic</Filter>
+    </ClInclude>
+>>>>>>> 63f768f2ac038be9c0895581b94580b55bbf5bd0
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\TerrainBlock.h">
       <Filter>头文件\Logic</Filter>
     </ClInclude>
@@ -223,6 +246,7 @@
     </ClInclude>
     <ClInclude Include="MCTextures.h">
       <Filter>头文件\Basic</Filter>
+<<<<<<< HEAD
     </ClInclude>
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\ButtonClass.h">
       <Filter>头文件\GUI</Filter>
@@ -234,6 +258,16 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\ShaderManager.h">
+=======
+    </ClInclude>
+    <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\Defines.h">
+      <Filter>头文件\Basic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\ButtonClass.h">
+      <Filter>头文件\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\Headers.h">
+>>>>>>> 63f768f2ac038be9c0895581b94580b55bbf5bd0
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Defines.h">

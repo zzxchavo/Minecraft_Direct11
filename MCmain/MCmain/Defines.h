@@ -1,6 +1,9 @@
 #pragma once
+<<<<<<< HEAD
 #include<D3D11.h>
 #include<D3DX11.h>
+=======
+>>>>>>> 63f768f2ac038be9c0895581b94580b55bbf5bd0
 const int screenWidth = 800, screenHeight = 600;
 
 #define CREATE_VERTEX_SHADER(x)\
