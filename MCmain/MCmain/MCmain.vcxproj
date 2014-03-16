@@ -86,10 +86,7 @@
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\BVClass.cpp" />
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\CloudClass.cpp" />
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\DayTime.cpp" />
-<<<<<<< HEAD
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\Defines.cpp" />
-=======
->>>>>>> 63f768f2ac038be9c0895581b94580b55bbf5bd0
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\OcclusionClass.cpp" />
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\PixelShaderClass.cpp" />
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\Rectangle2DClass.cpp" />
@@ -123,11 +120,7 @@
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\BVClass.h" />
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\CloudClass.h" />
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\DayTime.h" />
-<<<<<<< HEAD
     <ClInclude Include="Defines.h" />
-=======
-    <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\Defines.h" />
->>>>>>> 63f768f2ac038be9c0895581b94580b55bbf5bd0
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\GUI.h" />
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\Headers.h" />
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\OcclusionClass.h" />

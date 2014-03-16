@@ -1,9 +1,5 @@
 #pragma once
 #include"Headers.h"
-<<<<<<< HEAD
-=======
-
->>>>>>> 63f768f2ac038be9c0895581b94580b55bbf5bd0
 
 
 struct OutputQueue
@@ -45,11 +41,8 @@ private:
 	
 	VertexShaderClass * basicVS,*skyboxVS,*cloudVS,*texVS,*horizontalVS,*verticalVS,*guiVS;
 	PixelShaderClass  * basicPS,*skyboxPS,*cloudPS,*texPS,*horizontalPS,*verticalPS,*guiPS;
-<<<<<<< HEAD
 	VertexShaderClass *colorshakeVS;
 	PixelShaderClass *colorshakePS;
-=======
->>>>>>> 63f768f2ac038be9c0895581b94580b55bbf5bd0
 	ButtonClass* btn;
 	float skyRotation;
 	int Chunks;

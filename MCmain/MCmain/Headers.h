@@ -12,10 +12,7 @@
 #include <d3dx11async.h>
 #include <D3Dcompiler.h>
 #include "GUI.h"
-<<<<<<< HEAD
 #include "ShaderManager.h"
-=======
->>>>>>> 63f768f2ac038be9c0895581b94580b55bbf5bd0
 #include "resource.h"
 #include "VertexClass.h"
 #include "OBBClass.h"
