@@ -1,6 +1,5 @@
 #include "Rectangle2DClass.h"
 
-
 Rectangle2DClass::Rectangle2DClass()
 {
 }
@@ -22,6 +21,8 @@ bool Rectangle2DClass::Initialize(ID3D11Device * device, ID3D11DeviceContext* co
 	m_bitmapHeight = bitmapHeight;
 	m_previousPosX = -1;
 	m_previousPosY = -1;
+	m_previousWidth = bitmapWidth;
+	m_previousHeight = bitmapHeight;
 
 	hr = InitializeBuffers(device);
 	if (FAILED(hr))
@@ -114,7 +115,7 @@ HRESULT Rectangle2DClass::InitializeBuffers(ID3D11Device* device)
 	SAFE_DELETE(indices);
 }
 
-HRESULT Rectangle2DClass::UpdateBuffers(ID3D11DeviceContext* context,int positionX,int positionY)
+HRESULT Rectangle2DClass::UpdateBuffers(ID3D11DeviceContext* context,int positionX,int positionY,int wid,int hei)
 {
 	HRESULT hr;
 	float left, right, top, bottom;
@@ -123,10 +124,21 @@ HRESULT Rectangle2DClass::UpdateBuffers(ID3D11DeviceContext* context,int positio
 	VertexClass* verticesPtr;
 	//Y axis is different from that of directX11 while doing 2D rendering .
 	positionY = -positionY;
-	if ((positionX == m_previousPosX) && (positionY == m_previousPosY))
+	if (wid == -1 && hei == -1)
+	{
+		wid = m_previousWidth;
+		hei = m_previousHeight;
+	}
+//	printf("[%d %d %d %d] [%d %d %d %d]\n",positionX,positionY,m_previousPosX,m_previousPosY,wid,hei,m_previousWidth,m_previousWidth);
+	if ((positionX == m_previousPosX) && (positionY == m_previousPosY)&&(wid == m_previousWidth)&&(hei == m_previousHeight))
 		return S_OK;
+//	printf("*************************");
 	m_previousPosX = positionX;
 	m_previousPosY = positionY;
+	m_previousWidth = wid;
+	m_previousHeight = hei;
+	m_bitmapWidth = wid;
+	m_bitmapHeight = hei;
 	left = (float)(m_screenWidth / -2.0f) + (float)positionX;
 	right = left + (float)m_bitmapWidth;
 	top = (float)(m_screenHeight / 2.0f) + (float)positionY;

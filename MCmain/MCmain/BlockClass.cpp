@@ -4,7 +4,6 @@
 BlockClass::BlockClass(void)
 {
 	ZeroMemory(pos,sizeof(pos));
-	m_BlockBuffer = NULL;
 	unsigned int vindex[] = 
 	{
 		1,2,3,3,4,1,5,6,7,
@@ -61,26 +60,14 @@ BlockClass::BlockClass(void)
 
 BlockClass::~BlockClass(void)
 {
-	if(m_BlockBuffer)
-	{
-		m_BlockBuffer->Release();
-		m_BlockBuffer = NULL;
-	}
-	if (m_RenderFactors)
-	{
-		m_RenderFactors->Release();
-		m_RenderFactors = NULL;
-	}
-	if (m_BlockProperty)
-	{
-		m_BlockProperty->Release();
-		m_BlockProperty = NULL;
-	}
+	SAFE_RELEASE(m_BlockBuffer);
+	SAFE_RELEASE(m_RenderFactors);
+	SAFE_RELEASE(m_BlockProperty);
 }
 
-bool BlockClass::Initialize(ID3D11Device * device,ID3D11DeviceContext* context)
+HRESULT BlockClass::Initialize(ID3D11Device* device,ID3D11DeviceContext* context)
 {
-	HRESULT hr = NULL;
+	HRESULT hr = S_OK;
 
 	scaling[0] = 1.0f;
 	scaling[1] = 1.0f;
@@ -95,12 +82,11 @@ bool BlockClass::Initialize(ID3D11Device * device,ID3D11DeviceContext* context)
 	bd.CPUAccessFlags = 0;
 	D3D11_SUBRESOURCE_DATA sb;
 	ZeroMemory(&sb,sizeof(sb));
-	sb.pSysMem = pts;
+	sb.pSysMem = &pts[0].pts._XYZ[0];
 	hr = device->CreateBuffer(&bd,&sb,&m_BlockBuffer);
 	if(FAILED(hr))
 	{
-		MessageBox(NULL,L"ErrorCreate VertexBuffer",L"Error_BlockClass",MB_OK);
-		return false;
+		return hr;
 	}
 	ZeroMemory(&bd,sizeof(bd));
 	bd.ByteWidth = sizeof(Propertys);
@@ -110,8 +96,7 @@ bool BlockClass::Initialize(ID3D11Device * device,ID3D11DeviceContext* context)
 	hr = device->CreateBuffer(&bd,NULL,&m_BlockProperty);
 	if(FAILED(hr))
 	{
-		MessageBox(NULL,L"ErrorCreate Translation Buffer",L"Error_BlockClass",MB_OK);
-		return false;
+		return hr;
 	}
 	ZeroMemory(&bd,sizeof(bd));
 	bd.ByteWidth = sizeof(Factors);
@@ -121,14 +106,13 @@ bool BlockClass::Initialize(ID3D11Device * device,ID3D11DeviceContext* context)
 	hr = device->CreateBuffer(&bd,NULL,&m_RenderFactors);
 	if(FAILED(hr))
 	{
-		MessageBox(NULL,L"ErrorCreate RenderFactors Buffer",L"Error_BlockClass",MB_OK);
-		return false;
+		return hr;
 	}
 	rotation[0] = 0.0f;
 	rotation[1] = 0.0f;
 	rotation[2] = 0.0f;
 	D3DXMatrixIdentity(&propertys.RotationMatrix);
-	return true;
+	return hr;
 }
 
 void BlockClass::SetTransparency(ID3D11Device *device,ID3D11DeviceContext * context,float trans)
@@ -142,9 +126,9 @@ void BlockClass::SetTransparency(ID3D11Device *device,ID3D11DeviceContext * cont
 	*dptr2 = factors;
 	context->Unmap(m_RenderFactors, 0);
 	context->PSSetConstantBuffers(0, 1, &m_RenderFactors);
-	return ; 
+	return ;
 }
-void BlockClass::Render(ID3D11Device *device,ID3D11DeviceContext * context)
+void BlockClass::Render(ID3D11Device* device,ID3D11DeviceContext* context)
 {
 	HRESULT hr;
 	UINT stride = sizeof(VertexClass);
@@ -171,7 +155,7 @@ void BlockClass::Render(ID3D11Device *device,ID3D11DeviceContext * context)
 	context->Draw(36,0);
 }
 
-void BlockClass::SetPosition(float _x,float _y,float _z,ID3D11Device *device,ID3D11DeviceContext * context)
+void BlockClass::SetPosition(float _x,float _y,float _z,ID3D11Device* device,ID3D11DeviceContext* context)
 {
 	HRESULT hr;
 	pos[0] = _x;
@@ -195,7 +179,7 @@ void BlockClass::SetPosition(float _x,float _y,float _z,ID3D11Device *device,ID3
 }
 
 
-void BlockClass::SetScaling(float _x,float _y,float _z,ID3D11Device *device,ID3D11DeviceContext * context)
+void BlockClass::SetScaling(float _x,float _y,float _z,ID3D11Device* device,ID3D11DeviceContext* context)
 {
 	HRESULT hr;
 	scaling[0] = _x;

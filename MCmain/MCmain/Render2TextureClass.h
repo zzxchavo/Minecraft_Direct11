@@ -1,7 +1,7 @@
 #pragma once
 #include<D3D11.h>
 #include<D3DX11.h>
-#include"DefinesAndTextures.h"
+#include"Defines.h"
 class Render2TextureClass
 {
 public:

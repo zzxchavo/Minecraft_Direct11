@@ -5,33 +5,12 @@ BoneClass bone1, bone2 , bone3;
 
 WorldClass::WorldClass(void)
 {
-//shader objcets
-	CREATE_VERTEX_SHADER(skyboxVS);
-	CREATE_PIXEL_SHADER(skyboxPS);
-
-	CREATE_VERTEX_SHADER(basicVS);
-	CREATE_PIXEL_SHADER(basicPS); 
-
-	CREATE_VERTEX_SHADER(cloudVS);
-	CREATE_PIXEL_SHADER(cloudPS);
-
-	CREATE_VERTEX_SHADER(texVS);
-	CREATE_PIXEL_SHADER(texPS);
-
-	CREATE_VERTEX_SHADER(horizontalVS);
-	CREATE_PIXEL_SHADER(horizontalPS);
-
-	CREATE_VERTEX_SHADER(verticalVS);
-	CREATE_PIXEL_SHADER(verticalPS);
-//End shader objects
-
-
 //BlockClass-based object
 	SAFE_CREATE(m_block ,BlockClass);
 	SAFE_CREATE(m_sky, SkyClass(580.0f));
 	SAFE_CREATE(m_cloud , CloudClass);
 //End 
-
+	SAFE_CREATE(btn,ButtonClass(200,200,100,30));
 	SAFE_CREATE(m_sound , SoundClass);
 	SAFE_CREATE(m_input, InputClass);
 	SAFE_CREATE(m_player, PlayerClass);
@@ -46,7 +25,7 @@ WorldClass::WorldClass(void)
 	OptimizeThreadSwitch = true;
 //End thread operation.
 //Ohter initialize operations.
-
+	skyRotation = 0.0f;
 	Chunks = 50;
 	t_playerX = 0;
 	t_playerY = 0;
@@ -79,22 +58,10 @@ WorldClass::~WorldClass(void)
 	SAFE_DELETE(m_rect);
 	SAFE_DELETE(m_screenRect);
 	SAFE_DELETE(m_daytime);
+
+	SAFE_DELETE(btn);
 // Delete ShaderClass objects
-	DELETESHADER(basicVS);
-	DELETESHADER(basicPS);
-
-	DELETESHADER(skyboxVS);
-	DELETESHADER(skyboxPS);
-
-	DELETESHADER(cloudVS);
-	DELETESHADER(cloudPS);
-
-	DELETESHADER(horizontalVS);
-	DELETESHADER(horizontalPS);
-
-	DELETESHADER(verticalVS);
-	DELETESHADER(verticalPS);
-//End
+	SHADERMANAGER.ShutDown();
 }
 
 void WorldClass::ThreadUpdateMap()
@@ -128,29 +95,21 @@ void WorldClass::OptimizeThread()
 		t_output->unlock();
 	}
 }
-HRESULT WorldClass::Initialize(ID3D11Device * device,ID3D11DeviceContext * context,HWND hwnd)
+HRESULT WorldClass::Initialize(ID3D11Device* device,ID3D11DeviceContext* context,HWND hwnd)
 {
 
 	HRESULT hr=S_OK;
 	srand(time(NULL));
-	basic_hwnd = hwnd;
-
-	D3D11_INPUT_ELEMENT_DESC fogLayout[] =
-    {
-        { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-        { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-        { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	basic_hwnd = hwnd;	
+	
+//back color buffer operations!!!!!!!!!!!!!!!!!!!!!!!!!
+	D3D11_INPUT_ELEMENT_DESC fogLayout[3] = {
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+		, { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+		, { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 	};
 
-	UINT numElements = ARRAYSIZE(fogLayout);
-	
-	if (!m_sky->Initialize(device, context))
-		return E_FAIL;
-	if(!m_block->Initialize(device,context))
-		return E_FAIL;
-
-//back color buffer operations!!!!!!!!!!!!!!!!!!!!!!!!!
-
+	UINT numElements = 3;
 //Creating BlendBuffer
 	D3D11_BLEND_DESC blend_desc;
 	ZeroMemory(&blend_desc, sizeof(blend_desc));
@@ -215,27 +174,46 @@ HRESULT WorldClass::Initialize(ID3D11Device * device,ID3D11DeviceContext * conte
 	{
 		MessageBoxA(NULL, "", "", MB_OK);
 	}
+
 // objects initialization
 
 	MSG_RETURN(m_player->Initialize(device, context, m_map),"player");
 	m_player->SetStep(0.167f);
 //	m_player->SetStep(5.0f);
 //	m_map->GenerateArea(0, 0, 50);
-	MSG_RETURN(basicVS->Initialize(device, context, L"shaders/fog/fog.vs", "VSEntry", "vs_5_0", fogLayout, numElements), "fog.vs");
-	MSG_RETURN(basicPS->Initialize(device, context, L"shaders/fog/fog.ps", "PSEntry", "ps_5_0"), "fog.ps");
-	MSG_RETURN(skyboxVS->Initialize(device, context, L"shaders/skybox/skybox.vs", "VSEntry", "vs_5_0", fogLayout, numElements), "sky.vs");
-	MSG_RETURN(skyboxPS->Initialize(device, context, L"shaders/skybox/skybox.ps", "PSEntry", "ps_5_0"), "sky.ps");
-	MSG_RETURN(cloudVS->Initialize(device, context, L"shaders/skybox/cloud.vs", "VSEntry", "vs_5_0", fogLayout, numElements), "cloud.vs");
-	MSG_RETURN(cloudPS->Initialize(device, context, L"shaders/skybox/cloud.ps", "PSEntry", "ps_5_0"), "cloud.vs");
-	MSG_RETURN(texVS->Initialize(device, context, L"shaders/Tex2D/t2d.vs", "VSEntry", "vs_5_0", fogLayout, numElements), "tex2D.vs");
-	MSG_RETURN(texPS->Initialize(device, context, L"shaders/Tex2D/t2d.ps", "PSEntry", "ps_5_0"), "tex2D.ps");
-	MSG_RETURN(horizontalVS->Initialize(device, context, L"shaders/Blur/horizontal.vs", "VSEntry", "vs_5_0",fogLayout,numElements), "horizontal.vs");
-	MSG_RETURN(horizontalPS->Initialize(device, context, L"shaders/Blur/horizontal.ps", "PSEntry", "ps_5_0"), "horizontal.ps");
-	MSG_RETURN(verticalVS->Initialize(device, context, L"shaders/Blur/vertical.vs", "VSEntry", "vs_5_0", fogLayout, numElements), "vertical.vs");
-	MSG_RETURN(verticalPS->Initialize(device, context, L"shaders/Blur/vertical.ps", "PSEntry", "ps_5_0"), "vertical.ps");
+	if (FAILED(m_sky->Initialize(device, context)))
+		return E_FAIL;
+	if (FAILED(m_block->Initialize(device, context)))
+		return E_FAIL;
+
+	SHADERMANAGER.Initialize(device, context);
+	SHADERMANAGER.AddShader(device, context,(std::string)"basic", L"shaders/fog/fog.vs", L"shaders/fog/fog.ps",fogLayout,3);
+	SHADERMANAGER.AddShader(device, context, (std::string)"skybox", L"shaders/skybox/skybox.vs", L"shaders/skybox/skybox.ps", fogLayout, 3);
+	SHADERMANAGER.AddShader(device, context, (std::string)"cloud", L"shaders/skybox/cloud.vs", L"shaders/skybox/cloud.ps", fogLayout, 3);
+	SHADERMANAGER.AddShader(device, context, (std::string)"tex2d", L"shaders/Tex2D/t2d.vs", L"shaders/Tex2D/t2d.ps", fogLayout, 3);
+	SHADERMANAGER.AddShader(device, context, (std::string)"horizontal", L"shaders/Blur/horizontal.vs", L"shaders/Blur/horizontal.ps", fogLayout, 3);
+	SHADERMANAGER.AddShader(device, context, (std::string)"vertical", L"shaders/Blur/vertical.vs", L"shaders/Blur/vertical.ps", fogLayout, 3);
+	SHADERMANAGER.AddShader(device, context, (std::string)"gui", L"shaders/GUI/button.vs", L"shaders/GUI/button.ps", fogLayout, 3);
+	SHADERMANAGER.AddShader(device, context, (std::string)"colorshake", L"shaders/colorshake/colorshake.vs", L"shaders/colorshake/colorshake.ps", fogLayout, 3);
+//	MSG_RETURN(basicVS->Initialize(device, context, L"shaders/fog/fog.vs", "VSEntry", "vs_5_0", fogLayout, numElements), "fog.vs");
+//	MSG_RETURN(basicPS->Initialize(device, context, L"shaders/fog/fog.ps", "PSEntry", "ps_5_0"), "fog.ps");
+//	MSG_RETURN(skyboxVS->Initialize(device, context, L"shaders/skybox/skybox.vs", "VSEntry", "vs_5_0", fogLayout, numElements), "sky.vs");
+//	MSG_RETURN(skyboxPS->Initialize(device, context, L"shaders/skybox/skybox.ps", "PSEntry", "ps_5_0"), "sky.ps");
+//	MSG_RETURN(cloudVS->Initialize(device, context, L"shaders/skybox/cloud.vs", "VSEntry", "vs_5_0", fogLayout, numElements), "cloud.vs");
+//	MSG_RETURN(cloudPS->Initialize(device, context, L"shaders/skybox/cloud.ps", "PSEntry", "ps_5_0"), "cloud.vs");
+//	MSG_RETURN(texVS->Initialize(device, context, L"shaders/Tex2D/t2d.vs", "VSEntry", "vs_5_0", fogLayout, numElements), "tex2D.vs");
+//	MSG_RETURN(texPS->Initialize(device, context, L"shaders/Tex2D/t2d.ps", "PSEntry", "ps_5_0"), "tex2D.ps");
+//	MSG_RETURN(horizontalVS->Initialize(device, context, L"shaders/Blur/horizontal.vs", "VSEntry", "vs_5_0",fogLayout,numElements), "horizontal.vs");
+//	MSG_RETURN(horizontalPS->Initialize(device, context, L"shaders/Blur/horizontal.ps", "PSEntry", "ps_5_0"), "horizontal.ps");
+//	MSG_RETURN(verticalVS->Initialize(device, context, L"shaders/Blur/vertical.vs", "VSEntry", "vs_5_0", fogLayout, numElements), "vertical.vs");
+//	MSG_RETURN(verticalPS->Initialize(device, context, L"shaders/Blur/vertical.ps", "PSEntry", "ps_5_0"), "vertical.ps");
+//	MSG_RETURN(guiVS->Initialize(device, context, L"shaders/GUI/button.vs", "VSEntry", "vs_5_0", fogLayout, numElements), "vertical.vs");
+//	MSG_RETURN(guiPS->Initialize(device, context, L"shaders/GUI/button.ps", "PSEntry", "ps_5_0"), "vertical.ps");
+//	MSG_RETURN(colorshakeVS->Initialize(device, context, L"shaders/colorshake/colorshake.vs", "VSEntry", "vs_5_0", fogLayout, numElements), "colorshake.vs");
+//	MSG_RETURN(colorshakePS->Initialize(device, context, L"shaders/colorshake/colorshake.ps", "PSEntry", "ps_5_0"), "colorshake.ps");
 
 	MSG_RETURN(m_cloud->Initialize(device, context), "cloud");
-	MSG_RETURN(MCTextures.Initialize(device, context), "textures");
+	MSG_RETURN(DefinesAndTextures::GetInstance()->Initialize(device, context), "textures");
 	MSG_RETURN(m_rect->Initialize(device, context, 800, 600, 200, 200), "m_rect");
 	MSG_RETURN(m_screenRect->Initialize(device, context, 800, 600, 800, 600), "m_screenRect");
 	MSG_RETURN(m_daytime->Initialize(device, context), "m_daytime");
@@ -243,10 +221,7 @@ HRESULT WorldClass::Initialize(ID3D11Device * device,ID3D11DeviceContext * conte
 
 	m_player->SetPosition(device,context,0.0f, 63.0f, 0.0f);
 	
-//	int max_height = (*m_map)[m_map->BKDHash(0, 0)].Max_height + 3;
-//	m_player->SetPosition(device,context,0, max_height, 0);
-//	printf("%d %d\n", (*m_map)[m_map->BKDHash(0, 0)].Max_height + 1,(int)m_player->GetCamera()->GetY());
-	PlaySound(L"sound/calm.wav", NULL, SND_LOOP | SND_ASYNC);
+//	PlaySound(L"sound/calm.wav", NULL, SND_LOOP | SND_ASYNC);
 //End
 	bone1.SetName("hehe");
 	bone2.SetName("haha");
@@ -256,6 +231,9 @@ HRESULT WorldClass::Initialize(ID3D11Device * device,ID3D11DeviceContext * conte
 	bone1.SetPosition(0.0f, 65.0f, 0.0f);
 	bone2.SetPosition(0.0f, 65.0f, 10.0f);
 	bone3.SetPosition(0.0f, 65.0f,15.0f);
+
+	btn->Initialize(device, context);
+	printf("Jobs Done!!!!!!!!!!!!\n");
 	return true;
 }
 
@@ -289,7 +267,7 @@ void WorldClass::RenderFrame(ID3D11RenderTargetView * rendertarget,
 	m_daytime->UpdateTime(device,context);
 	float ClearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
 
-	if (m_input->GetKeyState(VK_LEFT)) m_player->GetCamera()->AddRotationY(-1);
+	if(m_input->GetKeyState(VK_LEFT)) m_player->GetCamera()->AddRotationY(-1);
 	if(m_input->GetKeyState(VK_RIGHT)) m_player->GetCamera()->AddRotationY( 1);
 	if(m_input->GetKeyState(VK_DOWN)) m_player->GetCamera()->AddRotationX( 1);
 	if(m_input->GetKeyState(VK_UP)) m_player->GetCamera()->AddRotationX(-1);
@@ -328,8 +306,9 @@ void WorldClass::RenderFrame(ID3D11RenderTargetView * rendertarget,
 	horizon.ClearRenderTarget(device,context,depthstencil);
 
 	TurnOffZBuffer(device, context);
-	context->VSSetShader(horizontalVS->GetVertexShader(), NULL, 0);
-	context->PSSetShader(horizontalPS->GetPixelShader(), NULL, 0);
+//	context->VSSetShader(horizontalVS->GetVertexShader(), NULL, 0);
+//	context->PSSetShader(horizontalPS->GetPixelShader(), NULL, 0);
+	SHADERMANAGER.UseShader(device,context,"horizontal");
 	context->PSSetShaderResources(0, 1, &(colorBuffer.GetShaderResourceView()));
 	m_screenRect->Render(device, context, 0, 0);
 
@@ -339,30 +318,34 @@ void WorldClass::RenderFrame(ID3D11RenderTargetView * rendertarget,
 	context->ClearRenderTargetView(rendertarget, ClearColor);
 	context->ClearDepthStencilView(depthstencil, D3D11_CLEAR_DEPTH, 1.0f, 0);
 
-	context->VSSetShader(verticalVS->GetVertexShader(), NULL, 0);
-	context->PSSetShader(verticalPS->GetPixelShader(), NULL, 0);
+	SHADERMANAGER.UseShader(device,context,"vertical");
 	context->PSSetShaderResources(0, 1, &(horizon.GetShaderResourceView()));
 	m_screenRect->Render(device, context, 0, 0);
 
-//	RenderScene(device, context);
-	context->VSSetShader(horizontalVS->GetVertexShader(), NULL, 0);
-	context->PSSetShader(horizontalPS->GetPixelShader(), NULL, 0);
+	SHADERMANAGER.UseShader(device,context,"horizontal");
 	context->PSSetShaderResources(0, 1, &(colorBuffer.GetShaderResourceView()));
 	m_screenRect->Render(device, context, 0, 0);
 
+	SHADERMANAGER.UseShader(device,context,"colorshake"); 
+	context->PSSetShaderResources(0, 1, &(colorBuffer.GetShaderResourceView()));
+	m_screenRect->Render(device, context, 0, 0);
 
-	context->VSSetShader(texVS->GetVertexShader(), NULL, 0);
-	context->PSSetShader(texPS->GetPixelShader(), NULL, 0);
+	SHADERMANAGER.UseShader(device,context,"tex2d");
 	context->PSSetShaderResources(0, 1, &(colorBuffer.GetShaderResourceView()));
 	m_rect->Render(device, context, 0, 0);
+	
+
+//	context->VSSetShader(guiVS->GetVertexShader(), NULL, 0);
+//	context->PSSetShader(guiPS->GetPixelShader(), NULL, 0);
+//	btn->Render(device, context);
 	TurnOnZBuffer(device, context);
 }
 void WorldClass::RenderScene(ID3D11Device * device,
 	ID3D11DeviceContext * context)
 {
-	context->VSSetShader(skyboxVS->GetVertexShader(), NULL, 0);
-	context->PSSetShader(skyboxPS->GetPixelShader(), NULL, 0);
-
+	//context->VSSetShader(skyboxVS->GetVertexShader(), NULL, 0);
+	//context->PSSetShader(skyboxPS->GetPixelShader(), NULL, 0);
+	SHADERMANAGER.UseShader(device,context,"skybox");
 	MCTextures[m_daytime->GetSkyboxTexture()]->PSBindTexture(device, context);
 	m_sky->Render(device, context);
 	m_sky->SetPosition(m_player->GetCamera()->GetX(),
@@ -370,20 +353,22 @@ void WorldClass::RenderScene(ID3D11Device * device,
 		m_player->GetCamera()->GetZ(),
 		device,
 		context);
+	m_sky->SetRotation(0.0f, skyRotation, skyRotation, device, context);
+	skyRotation -= 0.0001f;
+	if(skyRotation < -360.0f) skyRotation += 360.0f;
 	context->Draw(36, 0);
 
-
-	context->VSSetShader(cloudVS->GetVertexShader(), NULL, 0);
-	context->PSSetShader(cloudPS->GetPixelShader(), NULL, 0);
-
+//	context->VSSetShader(cloudVS->GetVertexShader(), NULL, 0);
+//	context->PSSetShader(cloudPS->GetPixelShader(), NULL, 0);
+	SHADERMANAGER.UseShader(device, context, "cloud");
 	TurnOnAlphaRendering(device, context);
 
 	MCTextures[CLOUD]->PSBindTexture(device, context);
 	m_cloud->Draw(device, context, m_block);
 
-	context->VSSetShader(basicVS->GetVertexShader(), NULL, 0);
-	context->PSSetShader(basicPS->GetPixelShader(), NULL, 0);
-
+//	context->VSSetShader(basicVS->GetVertexShader(), NULL, 0);
+//	context->PSSetShader(basicPS->GetPixelShader(), NULL, 0);
+	SHADERMANAGER.UseShader(device, context, "basic");
 	//	bone1.SetYawPitchRoll([&]()->float{return ::my += 0.003f; }(), 0.0f, 0.0f);
 	//	bone2.SetYawPitchRoll([&]()->float{return ::my2 += 0.03f; }(), 0.0f, 0.0f);
 

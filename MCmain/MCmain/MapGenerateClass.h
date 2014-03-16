@@ -7,7 +7,7 @@
 #include"PointClass.h"
 #include"TerrainBlock.h"
 #include"MapGenerateClass.h"
-#include"DefinesAndTextures.h"
+#include"Defines.h"
 
 using namespace std;
 

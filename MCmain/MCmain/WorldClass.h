@@ -1,48 +1,5 @@
 #pragma once
-
-#include <windows.h>
-#include <stdio.h>
-#include <math.h>
-#include <time.h>
-#include <stdlib.h>
-#include <iostream>
-#include <D3D11.h>
-#include <D3DX11.h>
-#include <d3dx11async.h>
-#include <D3Dcompiler.h>
-#include "resource.h"
-#include "VertexClass.h"
-#include "OBBClass.h"
-#include "BlockClass.h"
-#include "BoneClass.h"
-#include "SkyClass.h"
-#include "CloudClass.h"
-#include "PlayerClass.h"
-#include "InputClass.h"
-#include "SoundClass.h"
-#include "DefinesAndTextures.h"
-#include "MapGenerateClass.h"
-#include "VertexShaderClass.h"
-#include "PixelShaderClass.h"
-#include "FrameBuffer.h"
-#include "Render2TextureClass.h"
-#include "DayTime.h"
-#include "Rectangle2DClass.h"
-#include <vector>
-#include <set>
-#include <thread>
-#include <mutex>
-#include <functional>  
-
-using namespace std;
-
-#pragma comment(lib,"dxgi.lib")
-#pragma comment(lib,"d3d11.lib")
-#pragma comment(lib,"d3dx11.lib")
-#pragma comment(lib, "d3dx10.lib")
-#pragma comment(lib, "dsound.lib")
-#pragma comment(lib, "dxguid.lib")
-#pragma comment(lib, "winmm.lib")
+#include"Headers.h"
 
 
 struct OutputQueue
@@ -56,7 +13,8 @@ public:
 	WorldClass(void);
 	~WorldClass(void);
 
-	HRESULT Initialize(ID3D11Device *,ID3D11DeviceContext *,HWND);
+	HRESULT Initialize(ID3D11Device*,ID3D11DeviceContext*,HWND);
+	HRESULT Shutdown();
 
 	void Inputs();
 	void ThreadUpdateMap();
@@ -81,9 +39,12 @@ public:
 		ID3D11DeviceContext *);
 private:
 	
-	VertexShaderClass * basicVS,*skyboxVS,*cloudVS,*texVS,*horizontalVS,*verticalVS;
-	PixelShaderClass  * basicPS,*skyboxPS,*cloudPS,*texPS,*horizontalPS,*verticalPS;
-
+	VertexShaderClass * basicVS,*skyboxVS,*cloudVS,*texVS,*horizontalVS,*verticalVS,*guiVS;
+	PixelShaderClass  * basicPS,*skyboxPS,*cloudPS,*texPS,*horizontalPS,*verticalPS,*guiPS;
+	VertexShaderClass *colorshakeVS;
+	PixelShaderClass *colorshakePS;
+	ButtonClass* btn;
+	float skyRotation;
 	int Chunks;
 	int t_playerX,t_playerY,t_playerZ;
 	mutex		*t_mutex;		//µØÍ¼HashËø
@@ -99,12 +60,7 @@ private:
 	BlockClass	*m_block;
 	DayTime		*m_daytime;
 	MapGenerateClass   *m_map;
-	
-//	FrameBuffer colorBuffer,m_DownSampleTexure,m_HorizontalBlurTexture,m_VerticalBlurTexture,m_UpSampleTexure;
-
-	DefinesAndTextures MCTextures;
 	SoundClass* m_sound;
-	
 	vector<iPointClass>RenderQueue;
 
 //Rendering vars.

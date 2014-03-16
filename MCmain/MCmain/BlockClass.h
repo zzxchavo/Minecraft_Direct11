@@ -5,17 +5,18 @@
 #include <stdio.h>
 #include "VertexClass.h"
 #include "OBBClass.h"
+#include "Defines.h"
 
 class BlockClass
 {
 public:
 	BlockClass(void);
 	~BlockClass(void);
-	bool Initialize(ID3D11Device *,ID3D11DeviceContext *);
-	void Render(ID3D11Device *,ID3D11DeviceContext*);
-	void SetPosition(float,float,float,ID3D11Device *,ID3D11DeviceContext*);
+	HRESULT Initialize(ID3D11Device*,ID3D11DeviceContext*);
+	void Render(ID3D11Device*,ID3D11DeviceContext*);
+	void SetPosition(float,float,float,ID3D11Device*,ID3D11DeviceContext*);
 	void SetRotation(float,float,float,ID3D11Device*,ID3D11DeviceContext*);
-	void SetScaling(float,float,float,ID3D11Device *,ID3D11DeviceContext *);
+	void SetScaling(float,float,float,ID3D11Device*,ID3D11DeviceContext *);
 
 	void SetTransparency(ID3D11Device*,ID3D11DeviceContext*,float);
 private:
@@ -23,15 +24,12 @@ private:
 	friend class Rectangle2DClass;
 	VertexClass pts[36];
 	D3DXVECTOR3  pos,scaling,rotation;
-	ID3D11Buffer * m_BlockBuffer;
 	struct Propertys
 	{
 		D3DXMATRIX	 TranslationMatrix;
 		D3DXMATRIX   ScalingMatrix;
 		D3DXMATRIX	 RotationMatrix;
 	}propertys;
-	ID3D11Buffer * m_BlockProperty;
-	ID3D11Buffer * m_RenderFactors;
 	struct Factors
 	{
 		float transparent;
@@ -39,4 +37,7 @@ private:
 		float rev2;
 		float rev3;
 	}factors;
+	ID3D11Buffer* m_BlockBuffer;
+	ID3D11Buffer* m_BlockProperty;
+	ID3D11Buffer* m_RenderFactors;
 };
