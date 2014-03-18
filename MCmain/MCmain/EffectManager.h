@@ -2,6 +2,8 @@
 #include"ArtEffect.h"
 #include"BlurEffect.h"
 #include"ColorshakeEffect.h"
+#include"GlowEffect.h"
+#include"DepthfieldEffect.h"
 #include<D3D11.h>
 #include<D3DX11.h>
 #include<vector>

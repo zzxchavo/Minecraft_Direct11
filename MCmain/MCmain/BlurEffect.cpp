@@ -46,9 +46,6 @@ HRESULT BlurEffect::UseEffect(ID3D11Device* device,
 	context->PSSetShaderResources(0, 1, &(colorBuffer->GetShaderResourceView()));
 	m_screenRect->Render(device, context, 0, 0);
 	
-	vertical->SetRenderTarget(device,context,depthstencil);
-	vertical->ClearRenderTarget(device, context, depthstencil);
-	
 	colorBuffer->SetRenderTarget(device, context, depthstencil);
 	colorBuffer->ClearRenderTarget(device, context, depthstencil);
 	SHADERMANAGER.UseShader(device, context, "vertical");

@@ -33,6 +33,14 @@ HRESULT EffectManager::AddEffect(ID3D11Device* device, ID3D11DeviceContext* cont
 	{
 		SAFE_CREATE(vec.back(),BlurEffect);
 	}
+	else if (EffectName == "glow")
+	{
+		SAFE_CREATE(vec.back(),GlowEffect);
+	}
+	else if (EffectName == "depthfield")
+	{
+		SAFE_CREATE(vec.back(),DepthfieldEffect);
+	}
 	if (FAILED(vec.back()->Initialize(device, context)))
 	{
 		return E_FAIL;

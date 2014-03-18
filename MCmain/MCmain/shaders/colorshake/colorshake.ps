@@ -31,7 +31,7 @@ float4 PSEntry(PSInputType input) : SV_Target
 	color.g += shaderTexture.Sample(SampleType,input.texg);
 	color.b += shaderTexture.Sample(SampleType,input.texb);
 	float4 retcolor = basecolor + color;
-	retcolor = 0.9f * retcolor;
+	retcolor = 0.5f * retcolor;
 	retcolor.a = 1.0f;
 	retcolor = saturate(retcolor);
 	return retcolor;

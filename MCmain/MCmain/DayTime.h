@@ -23,6 +23,7 @@ public:
 
 	void UpdateTime(ID3D11Device* device, ID3D11DeviceContext* context);
 	long GetTime();
+	void SetTime(long newTime);
 	int  GetSkyboxTexture();
 private:
 	long lasttime;

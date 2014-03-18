@@ -89,7 +89,9 @@
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\ColorshakeEffect.cpp" />
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\DayTime.cpp" />
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\Defines.cpp" />
+    <ClCompile Include="DepthfieldEffect.cpp" />
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\EffectManager.cpp" />
+    <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\GlowEffect.cpp" />
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\OcclusionClass.cpp" />
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\PixelShaderClass.cpp" />
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\Rectangle2DClass.cpp" />
@@ -125,7 +127,9 @@
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\CloudClass.h" />
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\ColorshakeEffect.h" />
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\DayTime.h" />
+    <ClInclude Include="DepthfieldEffect.h" />
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\EffectManager.h" />
+    <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\GlowEffect.h" />
     <ClInclude Include="Defines.h" />
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\GUI.h" />
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\Headers.h" />

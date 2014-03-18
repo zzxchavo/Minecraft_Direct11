@@ -73,7 +73,7 @@ void Render2TextureClass::ClearRenderTarget(
 	ID3D11DeviceContext* context, 
 	ID3D11DepthStencilView* depth)
 {
-	float clearColor[] = {1.0f,0.0f,0.0f,1.0f};
+	float clearColor[] = {0.0f,0.0f,0.0f,1.0f};
 	context->ClearRenderTargetView(m_renderTargetView,clearColor);
 	context->ClearDepthStencilView(depth,D3D11_CLEAR_DEPTH , 1.0f , NULL);
 	return ;

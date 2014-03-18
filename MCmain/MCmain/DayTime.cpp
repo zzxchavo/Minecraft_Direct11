@@ -102,3 +102,8 @@ int DayTime::GetSkyboxTexture()
 {
 	return _skytex;
 }
+
+void DayTime::SetTime(long newTime)
+{
+	_time = newTime;
+}

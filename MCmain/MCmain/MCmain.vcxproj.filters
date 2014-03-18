@@ -144,6 +144,12 @@
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\ColorshakeEffect.cpp">
       <Filter>源文件\Effect</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\GlowEffect.cpp">
+      <Filter>源文件\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="DepthfieldEffect.cpp">
+      <Filter>源文件\Effect</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\BlockClass.h">
@@ -261,6 +267,12 @@
       <Filter>头文件\Effect</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\ColorshakeEffect.h">
+      <Filter>头文件\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\GlowEffect.h">
+      <Filter>头文件\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="DepthfieldEffect.h">
       <Filter>头文件\Effect</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,0 +1,29 @@
+Texture2D shaderTexture:register(t0);
+Texture2D glowTexture:register(t1);
+SamplerState SampleType:register(s0);
+
+cbuffer renderFactors : register(b0)
+{
+    float Transparent;
+    float3 rev;
+};
+
+cbuffer skyColor : register(b1)
+{
+	float4 skycolor;
+};
+
+struct PSInputType
+{
+	float4 position : SV_POSITION;
+	float2 tex : TEXCOORD0;
+};
+
+float4 PSEntry(PSInputType input) : SV_Target
+{
+	float4 glowcolor = glowTexture.Sample(SampleType,input.tex);
+	float4 basecolor = shaderTexture.Sample(SampleType,input.tex);
+	float4 retcolor = glowcolor + basecolor;
+	retcolor = saturate(retcolor);
+	return retcolor;
+}

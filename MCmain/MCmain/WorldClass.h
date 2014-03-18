@@ -66,7 +66,5 @@ private:
 
 	Render2TextureClass colorBuffer;
 	Rectangle2DClass* m_rect, *m_screenRect;
-	BlurEffect efb;
-	ColorshakeEffect efcs;
 	HWND basic_hwnd;
 };

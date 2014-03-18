@@ -107,7 +107,6 @@ HRESULT WorldClass::Initialize(ID3D11Device* device,ID3D11DeviceContext* context
 	srand(time(NULL));
 	basic_hwnd = hwnd;	
 	
-//back color buffer operations!!!!!!!!!!!!!!!!!!!!!!!!!
 	D3D11_INPUT_ELEMENT_DESC fogLayout[3] = {
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 		, { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 }
@@ -200,9 +199,12 @@ HRESULT WorldClass::Initialize(ID3D11Device* device,ID3D11DeviceContext* context
 	SHADERMANAGER.AddShader(device, context, "vertical", L"shaders/Blur/vertical.vs", L"shaders/Blur/vertical.ps", fogLayout, 3);
 	SHADERMANAGER.AddShader(device, context, "gui", L"shaders/GUI/button.vs", L"shaders/GUI/button.ps", fogLayout, 3);
 	SHADERMANAGER.AddShader(device, context, "colorshake", L"shaders/colorshake/colorshake.vs", L"shaders/colorshake/colorshake.ps", fogLayout, 3);
+	SHADERMANAGER.AddShader(device, context, "glow_color_select", L"shaders/glow/glow.vs", L"shaders/glow/glow.ps", fogLayout, 3);
+	SHADERMANAGER.AddShader(device, context, "glow_final", L"shaders/glow/glow_final.vs", L"shaders/glow/glow_final.ps", fogLayout, 3);
+	SHADERMANAGER.AddShader(device, context, "get_depth", L"shaders/Depthfield/get_depth.vs", L"shaders/Depthfield/get_depth.ps", fogLayout, 3);
+	SHADERMANAGER.AddShader(device, context, "depth", L"shaders/Depthfield/depth.vs", L"shaders/Depthfield/depth.ps", fogLayout, 3);
 
 	EFFECTMANAGER.AddEffect(device, context, "blur");
-	EFFECTMANAGER.AddEffect(device, context, "colorshake");
 
 	MSG_RETURN(m_cloud->Initialize(device, context), "cloud");
 	MSG_RETURN(DefinesAndTextures::GetInstance()->Initialize(device, context), "textures");
@@ -223,9 +225,8 @@ HRESULT WorldClass::Initialize(ID3D11Device* device,ID3D11DeviceContext* context
 	bone1.SetPosition(0.0f, 65.0f, 0.0f);
 	bone2.SetPosition(0.0f, 65.0f, 10.0f);
 	bone3.SetPosition(0.0f, 65.0f,15.0f);
-	efb.Initialize(device, context);
-	efcs.Initialize(device, context);
 	btn->Initialize(device, context);
+	m_daytime->SetTime(100);
 	return true;
 }
 
@@ -284,41 +285,16 @@ void WorldClass::RenderFrame(ID3D11RenderTargetView * rendertarget,
 	RenderScene(device, context);
 	TurnOffZBuffer(device, context);
 
-// Reset the render target back to the original back buffer and not the render to texture anymore.
-//	efb.UseEffect(device, context, depthstencil, colorBuffer.GetShaderResourceView());
-//	efcs.UseEffect(device, context, depthstencil, efb.GetShaderResourceView());
+
 	EFFECTMANAGER.Render(device, context, depthstencil, colorBuffer.GetShaderResourceView());
 
+// Reset the render target back to the original back buffer and not the render to texture anymore.
 	context->OMSetRenderTargets(1, &rendertarget, depthstencil);
+
 	SHADERMANAGER.UseShader(device, context, "tex2d");
 	context->PSSetShaderResources(0, 1, &(EFFECTMANAGER.GetShaderResourceView()));
 	m_screenRect->Render(device, context, 0, 0);
 
-/*
-	SHADERMANAGER.UseShader(device,context,"horizontal");
-	context->PSSetShaderResources(0, 1, &(colorBuffer.GetShaderResourceView()));
-	m_screenRect->Render(device, context, 0, 0);
-	context->ClearRenderTargetView(rendertarget, ClearColor);
-	context->ClearDepthStencilView(depthstencil, D3D11_CLEAR_DEPTH, 1.0f, 0);
-
-	SHADERMANAGER.UseShader(device,context,"vertical");
-	context->PSSetShaderResources(0, 1, &(horizon.GetShaderResourceView()));
-	m_screenRect->Render(device, context, 0, 0);
-
-	SHADERMANAGER.UseShader(device,context,"horizontal");
-	context->PSSetShaderResources(0, 1, &(colorBuffer.GetShaderResourceView()));
-	m_screenRect->Render(device, context, 0, 0);
-
-	SHADERMANAGER.UseShader(device,context,"colorshake"); 
-	context->PSSetShaderResources(0, 1, &(colorBuffer.GetShaderResourceView()));
-	m_screenRect->Render(device, context, 0, 0);
-
-	SHADERMANAGER.UseShader(device,context,"tex2d");
-	context->PSSetShaderResources(0, 1, &(colorBuffer.GetShaderResourceView()));
-	m_rect->Render(device, context, 0, 0);
-*/
-
-//	btn->Render(device, context);
 	TurnOnZBuffer(device, context);
 }
 void WorldClass::RenderScene(ID3D11Device * device,
@@ -351,6 +327,9 @@ void WorldClass::RenderScene(ID3D11Device * device,
 	D3DXVECTOR3 bone2ret = bone2.GetPosition();
 	D3DXVECTOR3 bone3ret = bone3.GetPosition();
 	printf("%f\t%f\t%f\t%d\n", m_player->GetCamera()->GetX(), m_player->GetCamera()->GetY(), m_player->GetCamera()->GetZ(), m_daytime->GetTime());
+	
+	;
+	
 	//	printf("\t%f\t%f\t%f\n\t%f\t%f\t%f\n\t%f\t%f\t%f\n", bone1ret[0], bone1ret[1], bone1ret[2],
 	//		bone2ret[0], bone2ret[1], bone2ret[2], bone3ret[0], bone3ret[1], bone3ret[2]);
 
