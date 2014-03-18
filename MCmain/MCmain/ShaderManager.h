@@ -9,13 +9,6 @@
 #include"VertexShaderClass.h"
 #include"PixelShaderClass.h"
 
-struct GroupShader
-{
-	VertexShaderClass* vs;
-	PixelShaderClass* ps;
-	std::string ShaderName;	
-};
-
 class ShaderManager
 {
 public:
@@ -27,6 +20,13 @@ public:
 
 	unsigned int GetSize();
 private:
+	struct GroupShader
+	{
+		VertexShaderClass* vs;
+		PixelShaderClass* ps;
+		std::string ShaderName;	
+	};
+
 	ShaderManager();
 	~ShaderManager();
 	static ShaderManager* instance;

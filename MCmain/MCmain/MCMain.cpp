@@ -263,6 +263,7 @@ void CleanupDevice()
     if( g_pSwapChain ) g_pSwapChain->Release();
     if( g_pImmediateContext ) g_pImmediateContext->Release();
 	if (g_pd3dDevice) g_pd3dDevice->Release();
+	m_world.Shutdown();
 }
 
 

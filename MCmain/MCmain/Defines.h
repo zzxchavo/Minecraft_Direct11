@@ -3,13 +3,13 @@
 #include<D3DX11.h>
 const int screenWidth = 800, screenHeight = 600;
 
-#define CREATE_VERTEX_SHADER(x)\
+#define CREATE_VERTEX_SHADER(x) {\
 	x = NULL; \
-	x = new VertexShaderClass;
+	x = new VertexShaderClass; }
 
-#define CREATE_PIXEL_SHADER(x) \
+#define CREATE_PIXEL_SHADER(x) {\
 	x = NULL; \
-	x = new PixelShaderClass;
+	x = new PixelShaderClass; }
 
 #define DELETESHADER(x) \
 if (x)\
@@ -24,8 +24,8 @@ if (x)\
 #define SAFE_RELEASE(x) if(x)\
 {x->Release(); x = nullptr; }
 
-#define SAFE_CREATE(varPtr,type) varPtr = nullptr;\
-	varPtr = new type;
+#define SAFE_CREATE(varPtr,type) {varPtr = nullptr;\
+	varPtr = new type; }
 
 #define MSG_RETURN(var,errormsg)	if(FAILED(var)){\
 	MessageBoxA(NULL, errormsg, "error", MB_OK); \

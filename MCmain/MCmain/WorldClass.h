@@ -38,11 +38,6 @@ public:
 	void RenderScene(ID3D11Device *,
 		ID3D11DeviceContext *);
 private:
-	
-	VertexShaderClass * basicVS,*skyboxVS,*cloudVS,*texVS,*horizontalVS,*verticalVS,*guiVS;
-	PixelShaderClass  * basicPS,*skyboxPS,*cloudPS,*texPS,*horizontalPS,*verticalPS,*guiPS;
-	VertexShaderClass *colorshakeVS;
-	PixelShaderClass *colorshakePS;
 	ButtonClass* btn;
 	float skyRotation;
 	int Chunks;
@@ -69,8 +64,9 @@ private:
 	ID3D11DepthStencilState* DepthStencilEnabled;
 	ID3D11DepthStencilState* DepthStencilDisabled;
 
-	Render2TextureClass colorBuffer, horizon, vertical;
-	Rectangle2DClass* m_rect,*m_screenRect;
-
+	Render2TextureClass colorBuffer;
+	Rectangle2DClass* m_rect, *m_screenRect;
+	BlurEffect efb;
+	ColorshakeEffect efcs;
 	HWND basic_hwnd;
 };

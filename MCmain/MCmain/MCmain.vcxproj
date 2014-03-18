@@ -81,12 +81,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\ArtEffect.cpp" />
+    <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\BlurEffect.cpp" />
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\BoneClass.cpp" />
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\ButtonClass.cpp" />
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\BVClass.cpp" />
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\CloudClass.cpp" />
+    <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\ColorshakeEffect.cpp" />
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\DayTime.cpp" />
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\Defines.cpp" />
+    <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\EffectManager.cpp" />
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\OcclusionClass.cpp" />
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\PixelShaderClass.cpp" />
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\Rectangle2DClass.cpp" />
@@ -115,11 +118,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\ArtEffect.h" />
+    <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\BlurEffect.h" />
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\BoneClass.h" />
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\ButtonClass.h" />
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\BVClass.h" />
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\CloudClass.h" />
+    <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\ColorshakeEffect.h" />
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\DayTime.h" />
+    <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\EffectManager.h" />
     <ClInclude Include="Defines.h" />
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\GUI.h" />
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\Headers.h" />

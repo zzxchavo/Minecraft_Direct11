@@ -31,11 +31,13 @@
 #include "Render2TextureClass.h"
 #include "DayTime.h"
 #include "Rectangle2DClass.h"
+#include "EffectManager.h"
+#include "BlurEffect.h"
 #include <vector>
 #include <set>
 #include <thread>
 #include <mutex>
-#include <functional>  
+#include <functional> 
 using namespace std;
 
 

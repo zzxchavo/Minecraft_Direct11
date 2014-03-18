@@ -25,8 +25,7 @@ ShaderManager::~ShaderManager()
 HRESULT ShaderManager::Initialize(ID3D11Device*& device, ID3D11DeviceContext*& context)
 {
 	HRESULT hr = S_OK;
-//	pdevice = device;
-//	pcontext = context;
+
 	return hr;
 }
 
@@ -44,14 +43,17 @@ HRESULT ShaderManager::ShutDown()
 
 HRESULT ShaderManager::AddShader(ID3D11Device* device,ID3D11DeviceContext* context,std::string ShaderName, WCHAR* vsPos, WCHAR* psPos, D3D11_INPUT_ELEMENT_DESC* layout,UINT num)
 {
+	HRESULT hr;
 	GroupShader imagin;
 	vec.push_back(imagin);
 	mp[ShaderName] = (int)vec.size() - 1;
 	vec.back().ShaderName = ShaderName;
 	CREATE_VERTEX_SHADER(vec.back().vs);
 	CREATE_PIXEL_SHADER(vec.back().ps);
-	vec.back().vs->Initialize(device, context,vsPos,"VSEntry","vs_5_0",layout,num);
-	vec.back().ps->Initialize(device, context, psPos, "PSEntry", "ps_5_0");
+	hr = vec.back().vs->Initialize(device, context,vsPos,"VSEntry","vs_5_0",layout,num);
+	if (FAILED(hr)) return hr;
+	hr = vec.back().ps->Initialize(device, context, psPos, "PSEntry", "ps_5_0");
+	if (FAILED(hr)) return hr;
 	return S_OK;
 }
 

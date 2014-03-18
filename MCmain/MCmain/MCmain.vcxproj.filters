@@ -31,6 +31,12 @@
     <Filter Include="源文件\GUI">
       <UniqueIdentifier>{6ec97509-e7c7-49b6-b27a-e4170f54b384}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\Effect">
+      <UniqueIdentifier>{c9928152-77eb-4eda-8b6c-b01f0bc1966c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Effect">
+      <UniqueIdentifier>{b5d065cd-5a0f-4825-96ce-c777bcd10a6f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\BlockClass.cpp">
@@ -58,9 +64,6 @@
       <Filter>源文件\Basic</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\MapGenerateClass.cpp">
-      <Filter>源文件\Basic</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\MCMain.cpp">
       <Filter>源文件\Basic</Filter>
     </ClCompile>
     <ClCompile Include="OBBClass.cpp">
@@ -120,14 +123,26 @@
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\ButtonClass.cpp">
       <Filter>源文件\GUI</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\ArtEffect.cpp">
+    <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\MCMain.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\ShaderManager.cpp">
-      <Filter>源文件</Filter>
+      <Filter>源文件\Basic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\ArtEffect.cpp">
+      <Filter>源文件\Effect</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\Defines.cpp">
-      <Filter>源文件</Filter>
+      <Filter>源文件\Basic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\BlurEffect.cpp">
+      <Filter>源文件\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\EffectManager.cpp">
+      <Filter>源文件\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\ColorshakeEffect.cpp">
+      <Filter>源文件\Effect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -230,14 +245,23 @@
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\Headers.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\ArtEffect.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\ShaderManager.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Defines.h">
       <Filter>头文件\Basic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\ArtEffect.h">
+      <Filter>头文件\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\ShaderManager.h">
+      <Filter>头文件\Basic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\BlurEffect.h">
+      <Filter>头文件\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\EffectManager.h">
+      <Filter>头文件\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\ColorshakeEffect.h">
+      <Filter>头文件\Effect</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
