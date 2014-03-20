@@ -50,6 +50,10 @@ public:
 	void SetDY(float);
 	void SetDZ(float);
 
+	D3DXMATRIX& GetProjectionMatrix();
+	D3DXMATRIX& GetViewMatrix();
+	D3DXMATRIX& GetWorldMatrix();
+
 private:
 	float m_rotationX;
 	float m_rotationY;
@@ -73,9 +77,5 @@ private:
 	D3D11_BUFFER_DESC bd;
 	FrustumClass* m_frustum;
 	OcclusionClass * m_occlusion;
-
-	unique_ptr<ID3D11Device*>pdevice;
-	unique_ptr<ID3D11DeviceContext*>pcontext;
-
 };
 

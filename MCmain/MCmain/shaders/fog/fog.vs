@@ -29,27 +29,6 @@ struct PSInputType
 	float fogFactor : FOG;
 };
 
-bool judgeIdentityMatrix(matrix matx)
-{
-	int i,j;
-	for(i = 0 ;i < 4; i++)
-	{
-		for(j = 0;j < 4 ; j++)
-		{
-			if(i != j )
-			{
-				if(matx[i][j] != 0)
-					return false;
-			}
-			else
-			{
-				if(matx[i][j]!=1)
-					return false;
-			}
-		}
-	}
-	return true;
-}
 PSInputType VSEntry(VSInputType input)
 {
 	float4 cameraPosition;

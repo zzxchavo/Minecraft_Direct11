@@ -97,22 +97,18 @@ CloudClass::~CloudClass(void)
 }
 
 
-void CloudClass::Draw(ID3D11Device* device,ID3D11DeviceContext* context,BlockClass * m_block)
+void CloudClass::Render(ID3D11Device* device,ID3D11DeviceContext* context,BlockClass * m_block)
 {
 	m_block->SetScaling(10,0.001,10,device,context);
 	m_block->SetRotation(0.0f, 0.0f, 0.0f, device, context);
 	m_block->SetTransparency(device, context, 0.7);
-
 	for(int i=0;i<MAX_CLOUD_NUM;i++)
 	{
 		int size = pos[i].GetQueSize();
 		for(int j=0;j<size;j++)
 		{
-			m_block->SetTransparency(device,context,1.0f);
 			m_block->SetPosition(10 * pos[i].GetQueX(j), 150, 10 * pos[i].GetQueZ(j), device, context);
-//			printf("%d %d %d\n",10*pos[i].GetQueX(j),100,10*pos[i].GetQueZ(j));
-			m_block->Render(device,context);
-			context->Draw(36,0);
+			m_block->Render(device, context);
 		}
 	}
 	m_block->SetScaling(1, 1, 1, device, context);

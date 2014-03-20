@@ -129,10 +129,8 @@ HRESULT Rectangle2DClass::UpdateBuffers(ID3D11DeviceContext* context,int positio
 		wid = m_previousWidth;
 		hei = m_previousHeight;
 	}
-//	printf("[%d %d %d %d] [%d %d %d %d]\n",positionX,positionY,m_previousPosX,m_previousPosY,wid,hei,m_previousWidth,m_previousWidth);
 	if ((positionX == m_previousPosX) && (positionY == m_previousPosY)&&(wid == m_previousWidth)&&(hei == m_previousHeight))
 		return S_OK;
-//	printf("*************************");
 	m_previousPosX = positionX;
 	m_previousPosY = positionY;
 	m_previousWidth = wid;

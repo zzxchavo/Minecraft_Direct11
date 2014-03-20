@@ -52,7 +52,6 @@ HRESULT EffectManager::Render(ID3D11Device* device, ID3D11DeviceContext* context
 {
 	HRESULT hr = S_OK;
 	if (vec.size() == 0) return S_OK;
-	printf("[%d]",vec.size());
 	vec[0]->UseEffect(device,context,depthstencil,tSRV);
 	for (int i = 1;i < vec.size(); i++)
 	{

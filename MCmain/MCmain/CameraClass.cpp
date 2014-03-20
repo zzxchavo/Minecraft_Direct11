@@ -71,9 +71,6 @@ bool CameraClass::Initialize(ID3D11Device * device,ID3D11DeviceContext* context,
 	//Create MatrixBuffers Here.
 	HRESULT hr;
 	
-	pdevice = (unique_ptr<ID3D11Device*>)&device;
-	pcontext = (unique_ptr<ID3D11DeviceContext*>)&context;
-	
 	m_rotationX = 0;
 	m_rotationY = 0;
 	m_rotationZ = 0;
@@ -347,4 +344,17 @@ float& CameraClass::GetDY()
 float& CameraClass::GetDZ()
 {
 	return dvec[2];
+}
+
+D3DXMATRIX& CameraClass::GetProjectionMatrix()
+{
+	return mat.ProjectionMatrix;
+}
+D3DXMATRIX& CameraClass::GetViewMatrix()
+{
+	return mat.ViewMatrix;
+}
+D3DXMATRIX& CameraClass::GetWorldMatrix()
+{
+	return mat.WorldMatrix;
 }

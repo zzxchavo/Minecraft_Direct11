@@ -5,8 +5,6 @@
 #include"BlockClass.h"
 using namespace std;
 
-void DrawLine(BlockClass*, ID3D11Device*, ID3D11DeviceContext*, 
-	float var, float var0, float var1, float var2, float var3, float var4);
 
 class BoneClass
 {

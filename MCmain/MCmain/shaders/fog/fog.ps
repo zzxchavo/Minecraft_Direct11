@@ -6,15 +6,17 @@ cbuffer renderFactors : register(b0)
     float Transparent;
     float3 rev;
 }
+
 cbuffer skyColor : register(b1)
 {
 	float4 skycolor;
 }
+
 struct PixelInputType
 {
-    float4 position : SV_POSITION;
+	float4 position : SV_POSITION;
 	float3 normal   : NORMAL;
-    float2 tex		: TEXCOORD0;
+	float2 tex	: TEXCOORD0;
 	float4 depthPosition : TEXCOORD1;
 	float fogFactor : FOG;
 };

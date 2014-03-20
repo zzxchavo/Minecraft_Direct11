@@ -44,7 +44,7 @@ class CloudClass
 public:
 	CloudClass(void);
 	~CloudClass(void);
-	void Draw(ID3D11Device * device,ID3D11DeviceContext*,BlockClass*);
+	void Render(ID3D11Device * device,ID3D11DeviceContext*,BlockClass*);
 	HRESULT Initialize(ID3D11Device * device,ID3D11DeviceContext*);
 private:
 	unsigned int WindDir;

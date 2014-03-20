@@ -19,6 +19,7 @@ public:
 	void SetScaling(float,float,float,ID3D11Device*,ID3D11DeviceContext *);
 
 	void SetTransparency(ID3D11Device*,ID3D11DeviceContext*,float);
+	HRESULT Shutdown();
 private:
 	friend class SkyClass;
 	friend class Rectangle2DClass;
@@ -37,6 +38,8 @@ private:
 		float rev2;
 		float rev3;
 	}factors;
+	ULONG* indices;
+	ID3D11Buffer* m_indexBuffer;
 	ID3D11Buffer* m_BlockBuffer;
 	ID3D11Buffer* m_BlockProperty;
 	ID3D11Buffer* m_RenderFactors;

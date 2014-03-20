@@ -30,14 +30,16 @@
 #include "PixelShaderClass.h"
 #include "Render2TextureClass.h"
 #include "DayTime.h"
+#include "DrawLine.hpp"
 #include "Rectangle2DClass.h"
 #include "EffectManager.h"
-#include "BlurEffect.h"
+#include "PickingClass.h"
 #include <vector>
 #include <set>
 #include <thread>
 #include <mutex>
 #include <functional> 
+//#include <ft2build.h>
 using namespace std;
 
 
@@ -48,3 +50,5 @@ using namespace std;
 #pragma comment(lib, "dsound.lib")
 #pragma comment(lib, "dxguid.lib")
 #pragma comment(lib, "winmm.lib")
+//#pragma comment(lib, "freetype253.lib")
+//#pragma comment(lib, "freetype253_D.lib")

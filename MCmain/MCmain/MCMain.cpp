@@ -295,7 +295,10 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
 		case WM_KEYUP:
 			m_world.GetInputClass()->SetKeyState(wParam,false);
 			break;
-
+		case WM_MOUSEMOVE:
+			m_world.GetInputClass()->SetMouseX(LOWORD(lParam));
+			m_world.GetInputClass()->SetMouseY(HIWORD(lParam));
+			break;
         default:
             return DefWindowProc( hWnd, message, wParam, lParam );
     }

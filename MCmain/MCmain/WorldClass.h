@@ -54,6 +54,7 @@ private:
 	CloudClass  *m_cloud;
 	BlockClass	*m_block;
 	DayTime		*m_daytime;
+	PickingClass* m_pick;
 	MapGenerateClass   *m_map;
 	SoundClass* m_sound;
 	vector<iPointClass>RenderQueue;

@@ -1,6 +1,5 @@
 #include "GlowEffect.h"
 
-
 GlowEffect::GlowEffect()
 {
 	SAFE_CREATE(colorBuffer, Render2TextureClass);

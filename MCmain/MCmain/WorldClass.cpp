@@ -18,6 +18,7 @@ WorldClass::WorldClass(void)
 	SAFE_CREATE(m_rect,Rectangle2DClass);
 	SAFE_CREATE(m_screenRect, Rectangle2DClass);
 	SAFE_CREATE(m_daytime, DayTime);
+	SAFE_CREATE(m_pick, PickingClass);
 //mutexs & threads
 	SAFE_CREATE(t_mutex , mutex);
 	SAFE_CREATE(t_output ,mutex);
@@ -64,6 +65,7 @@ WorldClass::~WorldClass(void)
 	SAFE_DELETE(m_rect);
 	SAFE_DELETE(m_screenRect);
 	SAFE_DELETE(m_daytime);
+	SAFE_DELETE(m_pick);
 
 	SAFE_DELETE(btn);
 // Delete ShaderClass objects
@@ -204,7 +206,7 @@ HRESULT WorldClass::Initialize(ID3D11Device* device,ID3D11DeviceContext* context
 	SHADERMANAGER.AddShader(device, context, "get_depth", L"shaders/Depthfield/get_depth.vs", L"shaders/Depthfield/get_depth.ps", fogLayout, 3);
 	SHADERMANAGER.AddShader(device, context, "depth", L"shaders/Depthfield/depth.vs", L"shaders/Depthfield/depth.ps", fogLayout, 3);
 
-	EFFECTMANAGER.AddEffect(device, context, "blur");
+	EFFECTMANAGER.AddEffect(device, context, "glow");
 
 	MSG_RETURN(m_cloud->Initialize(device, context), "cloud");
 	MSG_RETURN(DefinesAndTextures::GetInstance()->Initialize(device, context), "textures");
@@ -226,7 +228,7 @@ HRESULT WorldClass::Initialize(ID3D11Device* device,ID3D11DeviceContext* context
 	bone2.SetPosition(0.0f, 65.0f, 10.0f);
 	bone3.SetPosition(0.0f, 65.0f,15.0f);
 	btn->Initialize(device, context);
-	m_daytime->SetTime(100);
+//	m_daytime->SetTime(0);
 	return true;
 }
 
@@ -277,7 +279,7 @@ void WorldClass::RenderFrame(ID3D11RenderTargetView * rendertarget,
 
 	m_player->CheckCollision(device,context,m_map);
 	m_player->GetCamera()->UpdateCamera(device, context);
-	printf("%f\t%f\t%f\t%d\n", m_player->GetCamera()->GetX(), m_player->GetCamera()->GetY(), m_player->GetCamera()->GetZ(), m_daytime->GetTime());
+//	printf("%f\t%f\t%f\t%d\n", m_player->GetCamera()->GetX(), m_player->GetCamera()->GetY(), m_player->GetCamera()->GetZ(), m_daytime->GetTime());
 //Set Render Target::Set the render target to be the render to texture
 
 	colorBuffer.SetRenderTarget(device, context, depthstencil);
@@ -294,7 +296,6 @@ void WorldClass::RenderFrame(ID3D11RenderTargetView * rendertarget,
 	SHADERMANAGER.UseShader(device, context, "tex2d");
 	context->PSSetShaderResources(0, 1, &(EFFECTMANAGER.GetShaderResourceView()));
 	m_screenRect->Render(device, context, 0, 0);
-
 	TurnOnZBuffer(device, context);
 }
 void WorldClass::RenderScene(ID3D11Device * device,
@@ -302,6 +303,7 @@ void WorldClass::RenderScene(ID3D11Device * device,
 {
 	SHADERMANAGER.UseShader(device,context,"skybox");
 	MCTextures[m_daytime->GetSkyboxTexture()]->PSBindTexture(device, context);
+	m_pick->UpdateRay(m_input, m_player->GetCamera());
 	m_sky->Render(device, context);
 	m_sky->SetPosition(m_player->GetCamera()->GetX(),
 		m_player->GetCamera()->GetY(),
@@ -311,48 +313,70 @@ void WorldClass::RenderScene(ID3D11Device * device,
 	m_sky->SetRotation(0.0f, skyRotation, skyRotation, device, context);
 	skyRotation -= 0.0001f;
 	if(skyRotation < -360.0f) skyRotation += 360.0f;
-	context->Draw(36, 0);
 
 	SHADERMANAGER.UseShader(device, context, "cloud");
 	TurnOnAlphaRendering(device, context);
 
 	MCTextures[CLOUD]->PSBindTexture(device, context);
-	m_cloud->Draw(device, context, m_block);
+	m_cloud->Render(device, context, m_block);
 
 	SHADERMANAGER.UseShader(device, context, "basic");
-	//	bone1.SetYawPitchRoll([&]()->float{return ::my += 0.003f; }(), 0.0f, 0.0f);
-	//	bone2.SetYawPitchRoll([&]()->float{return ::my2 += 0.03f; }(), 0.0f, 0.0f);
-
+//	bone1.SetYawPitchRoll([&]()->float{return ::my += 0.003f; }(), 0.0f, 0.0f);
+//	bone2.SetYawPitchRoll([&]()->float{return ::my2 += 0.03f; }(), 0.0f, 0.0f);
 	D3DXVECTOR3 bone1ret = bone1.GetPosition();
 	D3DXVECTOR3 bone2ret = bone2.GetPosition();
 	D3DXVECTOR3 bone3ret = bone3.GetPosition();
 	printf("%f\t%f\t%f\t%d\n", m_player->GetCamera()->GetX(), m_player->GetCamera()->GetY(), m_player->GetCamera()->GetZ(), m_daytime->GetTime());
-	
+//	printf("\t%f\t%f\t%f\n\t%f\t%f\t%f\n\t%f\t%f\t%f\n", bone1ret[0], bone1ret[1], bone1ret[2],
+//		bone2ret[0], bone2ret[1], bone2ret[2], bone3ret[0], bone3ret[1], bone3ret[2]);
+
+
+//	DrawLine(m_block, device, context, bone1ret[0], bone1ret[1], bone1ret[2],
+//		bone2ret[0], bone2ret[1], bone2ret[2]);
+//	DrawLine(m_block, device, context, bone2ret[0], bone2ret[1], bone2ret[2],
+//		bone3ret[0], bone3ret[1], bone3ret[2]);
+
+	MCTextures[SKYBOX_DAWN]->PSBindTexture(device, context);
+	DrawLine(device, context, m_pick->GetOrigin().x, m_pick->GetOrigin().y, m_pick->GetOrigin().z,
+		m_pick->GetOrigin().x + m_pick->GetDirection().x,
+		m_pick->GetOrigin().y + m_pick->GetDirection().y,
+		m_pick->GetOrigin().z + m_pick->GetDirection().z);
+/*
+	DrawLine(m_block, device, context, 0,
+		0,
+		0,
+		0+ 10.0f,
+		63,
+	0)
+	DrawLine(m_block, device, context, m_player->GetCamera()->GetX(),
+		m_player->GetCamera()->GetY(),
+		m_player->GetCamera()->GetZ(),
+		m_player->GetCamera()->GetX() + 10.0f,
+		m_player->GetCamera()->GetY() ,
+		m_player->GetCamera()->GetZ() );
 	;
-	
-	//	printf("\t%f\t%f\t%f\n\t%f\t%f\t%f\n\t%f\t%f\t%f\n", bone1ret[0], bone1ret[1], bone1ret[2],
-	//		bone2ret[0], bone2ret[1], bone2ret[2], bone3ret[0], bone3ret[1], bone3ret[2]);
-
-
-	//	DrawLine(m_block, device, context, bone1ret[0], bone1ret[1], bone1ret[2],
-	//		bone2ret[0], bone2ret[1], bone2ret[2]);
-	//	DrawLine(m_block, device, context, bone2ret[0], bone2ret[1], bone2ret[2],
-	//		bone3ret[0], bone3ret[1], bone3ret[2]);
-
-	m_block->Render(device, context);
+	*/
 	for (int i = -50; i<50; i++)
 	for (int j = -50; j<50; j++)
 	for (int my = -20; my<50; my++)
 	{
 		int tx = m_map->GetData(i, my, j);
-		//			printf("%d ",tx);
 		if (tx != 0 && m_player->GetCamera()->CheckBox(i, my, j, 0.5))
 		{
+			float dist = 1000.0;
+			XNA::OrientedBox bx;
+			bx.Center = { (float)i, (float)my, (float)j };
+			bx.Extents = { 0.5f ,0.5f,0.5f};
+			FXMVECTOR a = { m_pick->GetOrigin().x, m_pick->GetOrigin().y, m_pick->GetOrigin().z }, 
+				b = { m_pick->GetDirection().x, m_pick->GetDirection().y, m_pick->GetDirection().z };
+			bool ret = XNA::IntersectRayOrientedBox(a,b,&bx,&dist);
+			if (ret) tx = CLOUD;
+//			printf("%f\n",dist);
 			MCTextures[tx]->PSBindTexture(device, context);
 			m_block->SetTransparency(device, context, 1.0f);
 			m_block->SetRotation(0.0f, 0.0f, 0.0f, device, context);
 			m_block->SetPosition(i, my, j, device, context);
-			context->Draw(36, 0);
+			m_block->Render(device, context);
 		}
 	}
 	TurnOffAlphaRendering(device, context);

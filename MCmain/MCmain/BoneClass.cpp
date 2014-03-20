@@ -106,9 +106,10 @@ D3DXVECTOR3 BoneClass::GetPosition()
 }
 
 
-void ::DrawLine(BlockClass* block, ID3D11Device* device, ID3D11DeviceContext* context,
+void DrawLine(BlockClass* block, ID3D11Device* device, ID3D11DeviceContext* context,
 	float var, float var0, float var1, float var2, float var3, float var4)
 {
+	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
 	float midx = (var + var2) / 2.0f;
 	float midy = (var0 + var3) / 2.0f;
 	float midz = (var1 + var4) / 2.0f;
@@ -125,10 +126,11 @@ void ::DrawLine(BlockClass* block, ID3D11Device* device, ID3D11DeviceContext* co
 		((var2 - var > 0) && (var4 - var1 < 0)))
 		yaw = -yaw;
 	block->SetPosition(midx,midy,midz,device,context);
-	block->SetScaling(0.1f, 0.1f, length, device, context);
+	block->SetScaling(0.01f, 0.01f, length, device, context);
 	block->SetRotation(yaw,pitch,roll,device,context);
 	block->Render(device,context);
 	context->Draw(36,0);
 	block->SetRotation(0.0f,0.0f,0.0f,device,context);
-	block->SetScaling(1.0f, 1.0f, 1.0f, device, context);
+	block->SetScaling(1.0f, 1.0f, 1.0f, device, context);	
+	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
