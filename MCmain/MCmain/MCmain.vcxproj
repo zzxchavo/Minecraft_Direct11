@@ -90,6 +90,7 @@
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\DayTime.cpp" />
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\Defines.cpp" />
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\DrawLine.cpp" />
+    <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\ModelClass.cpp" />
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\PickingClass.cpp" />
     <ClCompile Include="DepthfieldEffect.cpp" />
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\EffectManager.cpp" />
@@ -130,6 +131,7 @@
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\ColorshakeEffect.h" />
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\DayTime.h" />
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\DrawLine.hpp" />
+    <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\ModelClass.h" />
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\PickingClass.h" />
     <ClInclude Include="DepthfieldEffect.h" />
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\EffectManager.h" />

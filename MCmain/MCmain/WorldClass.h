@@ -38,6 +38,8 @@ public:
 	void RenderScene(ID3D11Device *,
 		ID3D11DeviceContext *);
 private:
+	ModelClass mdc;
+	float dx, dy;
 	ButtonClass* btn;
 	float skyRotation;
 	int Chunks;

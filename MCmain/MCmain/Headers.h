@@ -34,6 +34,7 @@
 #include "Rectangle2DClass.h"
 #include "EffectManager.h"
 #include "PickingClass.h"
+#include "ModelClass.h"
 #include <vector>
 #include <set>
 #include <thread>

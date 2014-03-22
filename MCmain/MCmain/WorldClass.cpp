@@ -5,6 +5,7 @@ BoneClass bone1, bone2 , bone3;
 
 WorldClass::WorldClass(void)
 {
+	dx = 0.0f, dy = 0.0f;
 //BlockClass-based object
 	SAFE_CREATE(m_block ,BlockClass);
 	SAFE_CREATE(m_sky, SkyClass(580.0f));
@@ -36,6 +37,8 @@ WorldClass::WorldClass(void)
 HRESULT WorldClass::Shutdown()
 {
 	HRESULT hr = S_OK;
+	mdc.Shutdown();
+	m_block->Shutdown();
 	SHADERMANAGER.ShutDown();
 	EFFECTMANAGER.Shutdown();
 	return hr;
@@ -185,8 +188,6 @@ HRESULT WorldClass::Initialize(ID3D11Device* device,ID3D11DeviceContext* context
 
 	MSG_RETURN(m_player->Initialize(device, context, m_map),"player");
 	m_player->SetStep(0.167f);
-//	m_player->SetStep(5.0f);
-//	m_map->GenerateArea(0, 0, 50);
 	if (FAILED(m_sky->Initialize(device, context)))
 		return E_FAIL;
 	if (FAILED(m_block->Initialize(device, context)))
@@ -207,6 +208,8 @@ HRESULT WorldClass::Initialize(ID3D11Device* device,ID3D11DeviceContext* context
 	SHADERMANAGER.AddShader(device, context, "depth", L"shaders/Depthfield/depth.vs", L"shaders/Depthfield/depth.ps", fogLayout, 3);
 
 	EFFECTMANAGER.AddEffect(device, context, "glow");
+//	EFFECTMANAGER.AddEffect(device, context, "blur");
+//	EFFECTMANAGER.AddEffect(device, context, "colorshake");
 
 	MSG_RETURN(m_cloud->Initialize(device, context), "cloud");
 	MSG_RETURN(DefinesAndTextures::GetInstance()->Initialize(device, context), "textures");
@@ -227,8 +230,10 @@ HRESULT WorldClass::Initialize(ID3D11Device* device,ID3D11DeviceContext* context
 	bone1.SetPosition(0.0f, 65.0f, 0.0f);
 	bone2.SetPosition(0.0f, 65.0f, 10.0f);
 	bone3.SetPosition(0.0f, 65.0f,15.0f);
+//	mdc.Initialize(device,context,"E:/Projects/OpenGL/Obj-catcherNeheFramework2-back/models/classroomALLPROPERTYS.obj");
+	if(FAILED(mdc.Initialize(device, context, "E:/Projects/OpenGL/Obj-catcherNeheFramework2-back/models/ballALL.obj")))
+		MessageBox(NULL,L"",L"",MB_OK);
 	btn->Initialize(device, context);
-//	m_daytime->SetTime(0);
 	return true;
 }
 
@@ -260,7 +265,7 @@ void WorldClass::RenderFrame(ID3D11RenderTargetView * rendertarget,
 {
 	
 	m_daytime->UpdateTime(device,context);
-	float ClearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
+	float ClearColor[4] = { 1.0f, 0.0f, 0.0f, 1.0f };
 
 	if(m_input->GetKeyState(VK_LEFT)) m_player->GetCamera()->AddRotationY(-1);
 	if(m_input->GetKeyState(VK_RIGHT)) m_player->GetCamera()->AddRotationY( 1);
@@ -279,7 +284,6 @@ void WorldClass::RenderFrame(ID3D11RenderTargetView * rendertarget,
 
 	m_player->CheckCollision(device,context,m_map);
 	m_player->GetCamera()->UpdateCamera(device, context);
-//	printf("%f\t%f\t%f\t%d\n", m_player->GetCamera()->GetX(), m_player->GetCamera()->GetY(), m_player->GetCamera()->GetZ(), m_daytime->GetTime());
 //Set Render Target::Set the render target to be the render to texture
 
 	colorBuffer.SetRenderTarget(device, context, depthstencil);
@@ -303,7 +307,7 @@ void WorldClass::RenderScene(ID3D11Device * device,
 {
 	SHADERMANAGER.UseShader(device,context,"skybox");
 	MCTextures[m_daytime->GetSkyboxTexture()]->PSBindTexture(device, context);
-	m_pick->UpdateRay(m_input, m_player->GetCamera());
+	m_pick->UpdateRay(400 , 300, m_player->GetCamera());
 	m_sky->Render(device, context);
 	m_sky->SetPosition(m_player->GetCamera()->GetX(),
 		m_player->GetCamera()->GetY(),
@@ -326,36 +330,11 @@ void WorldClass::RenderScene(ID3D11Device * device,
 	D3DXVECTOR3 bone1ret = bone1.GetPosition();
 	D3DXVECTOR3 bone2ret = bone2.GetPosition();
 	D3DXVECTOR3 bone3ret = bone3.GetPosition();
-	printf("%f\t%f\t%f\t%d\n", m_player->GetCamera()->GetX(), m_player->GetCamera()->GetY(), m_player->GetCamera()->GetZ(), m_daytime->GetTime());
+//	printf("%f\t%f\t%f\t%d\n", m_player->GetCamera()->GetX(), m_player->GetCamera()->GetY(), m_player->GetCamera()->GetZ(), m_daytime->GetTime());
 //	printf("\t%f\t%f\t%f\n\t%f\t%f\t%f\n\t%f\t%f\t%f\n", bone1ret[0], bone1ret[1], bone1ret[2],
 //		bone2ret[0], bone2ret[1], bone2ret[2], bone3ret[0], bone3ret[1], bone3ret[2]);
-
-
-//	DrawLine(m_block, device, context, bone1ret[0], bone1ret[1], bone1ret[2],
-//		bone2ret[0], bone2ret[1], bone2ret[2]);
-//	DrawLine(m_block, device, context, bone2ret[0], bone2ret[1], bone2ret[2],
-//		bone3ret[0], bone3ret[1], bone3ret[2]);
-
+	
 	MCTextures[SKYBOX_DAWN]->PSBindTexture(device, context);
-	DrawLine(device, context, m_pick->GetOrigin().x, m_pick->GetOrigin().y, m_pick->GetOrigin().z,
-		m_pick->GetOrigin().x + m_pick->GetDirection().x,
-		m_pick->GetOrigin().y + m_pick->GetDirection().y,
-		m_pick->GetOrigin().z + m_pick->GetDirection().z);
-/*
-	DrawLine(m_block, device, context, 0,
-		0,
-		0,
-		0+ 10.0f,
-		63,
-	0)
-	DrawLine(m_block, device, context, m_player->GetCamera()->GetX(),
-		m_player->GetCamera()->GetY(),
-		m_player->GetCamera()->GetZ(),
-		m_player->GetCamera()->GetX() + 10.0f,
-		m_player->GetCamera()->GetY() ,
-		m_player->GetCamera()->GetZ() );
-	;
-	*/
 	for (int i = -50; i<50; i++)
 	for (int j = -50; j<50; j++)
 	for (int my = -20; my<50; my++)
@@ -363,15 +342,14 @@ void WorldClass::RenderScene(ID3D11Device * device,
 		int tx = m_map->GetData(i, my, j);
 		if (tx != 0 && m_player->GetCamera()->CheckBox(i, my, j, 0.5))
 		{
-			float dist = 1000.0;
+			float dist;
 			XNA::OrientedBox bx;
 			bx.Center = { (float)i, (float)my, (float)j };
 			bx.Extents = { 0.5f ,0.5f,0.5f};
 			FXMVECTOR a = { m_pick->GetOrigin().x, m_pick->GetOrigin().y, m_pick->GetOrigin().z }, 
 				b = { m_pick->GetDirection().x, m_pick->GetDirection().y, m_pick->GetDirection().z };
 			bool ret = XNA::IntersectRayOrientedBox(a,b,&bx,&dist);
-			if (ret) tx = CLOUD;
-//			printf("%f\n",dist);
+			if (ret && dist < 10.0f) tx = CLOUD;
 			MCTextures[tx]->PSBindTexture(device, context);
 			m_block->SetTransparency(device, context, 1.0f);
 			m_block->SetRotation(0.0f, 0.0f, 0.0f, device, context);
@@ -379,6 +357,14 @@ void WorldClass::RenderScene(ID3D11Device * device,
 			m_block->Render(device, context);
 		}
 	}
+	mdc.SetTransparency(device, context, 1.0f);
+	mdc.SetPosition(0, 63.0, 0, device, context);
+	mdc.SetScaling(1.0f, 1.0f, 1.0f, device, context);
+	mdc.SetRotation(0.0f, 0.0f, 0.0f, device, context);
+
+	MCTextures[STONE]->PSBindTexture(device, context);
+	mdc.Render(device, context);
+
 	TurnOffAlphaRendering(device, context);
 	return ;
 }

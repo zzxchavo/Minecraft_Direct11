@@ -10,7 +10,7 @@ class PickingClass
 public:
 	PickingClass();
 	~PickingClass();
-	HRESULT UpdateRay(InputClass* input,CameraClass* camera);
+	HRESULT UpdateRay(int pickx,int picky,CameraClass* camera);
 	D3DXVECTOR3& GetDirection();
 	D3DXVECTOR3& GetOrigin();
 private:

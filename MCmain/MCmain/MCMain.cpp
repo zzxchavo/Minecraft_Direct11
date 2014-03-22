@@ -53,6 +53,8 @@ int WINAPI wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdL
     MSG msg = {0};
     while( WM_QUIT != msg.message )
     {
+		if (m_world.GetInputClass()->GetKeyState(VK_ESCAPE))
+			break;
         if( PeekMessage( &msg, NULL, 0, 0, PM_REMOVE ) )
         {
             TranslateMessage( &msg );
@@ -247,6 +249,29 @@ HRESULT InitDevice()
 	g_pImmediateContext->RSSetState(raState);
 	if(!m_world.Initialize(g_pd3dDevice,g_pImmediateContext,g_hWnd))
 		return E_FAIL;
+
+	POINT lt, rb, m_insideCentre, m_outsideCentre;
+	RECT m_rect;
+	GetClientRect(g_hWnd, &m_rect);
+	lt.x = m_rect.left;
+	lt.y = m_rect.top;
+	rb.x = m_rect.right;
+	rb.y = m_rect.bottom;
+	ClientToScreen(g_hWnd, &lt);
+	ClientToScreen(g_hWnd, &rb);
+	m_rect.left = lt.x;
+	m_rect.top = lt.y;
+	m_rect.right = rb.x;
+	m_rect.bottom = rb.y;
+	ClipCursor(&m_rect);
+	m_insideCentre.x = (m_rect.right - m_rect.left) / 2;
+	m_insideCentre.y = (m_rect.bottom - m_rect.top) / 2;
+	m_outsideCentre.x = m_rect.left + m_insideCentre.x;
+	m_outsideCentre.y = m_rect.top + m_insideCentre.y;
+	
+	m_world.GetInputClass()->SetCentre(m_outsideCentre);
+	//ShowCursor(false);		//Òþ²ØÊó±ê¹â±ê
+
     return S_OK;
 }
 
@@ -274,13 +299,12 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
 {
     PAINTSTRUCT ps;
     HDC hdc;
-
     switch( message )
     {
 		case WM_CREATE:
 			break;
         case WM_PAINT:
-            hdc = BeginPaint( hWnd, &ps );
+			hdc = BeginPaint(hWnd, &ps);
             EndPaint( hWnd, &ps );
             break;
 
@@ -299,7 +323,19 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
 			m_world.GetInputClass()->SetMouseX(LOWORD(lParam));
 			m_world.GetInputClass()->SetMouseY(HIWORD(lParam));
 			break;
-        default:
+		case WM_LBUTTONDOWN:
+			m_world.GetInputClass()->SetMouseBtnState(MOUSE_LEFTBUTTON, true); 
+			break;
+		case WM_LBUTTONUP:
+			m_world.GetInputClass()->SetMouseBtnState(MOUSE_LEFTBUTTON, false);
+			break;
+		case WM_RBUTTONDOWN:
+			m_world.GetInputClass()->SetMouseBtnState(MOUSE_RIGHTBUTTON, true);
+			break;
+		case WM_RBUTTONUP:
+			m_world.GetInputClass()->SetMouseBtnState(MOUSE_RIGHTBUTTON, false);
+			break;
+		default:
             return DefWindowProc( hWnd, message, wParam, lParam );
     }
 

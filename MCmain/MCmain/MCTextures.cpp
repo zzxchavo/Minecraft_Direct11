@@ -32,7 +32,8 @@ bool DefinesAndTextures::Initialize(ID3D11Device *device,ID3D11DeviceContext *co
 	hr = m_texs[DIRT		]->Initialize(device,L"data/default_dirt.png");if(FAILED(hr)) return false;
 	hr = m_texs[SKYBOX_DAY	]->Initialize(device,L"data/skybox2.png");if(FAILED(hr)) return false;
 	hr = m_texs[SKYBOX_NIGHT]->Initialize(device,L"data/skybox2_night.png");if(FAILED(hr)) return false;
-	hr = m_texs[TREE		]->Initialize(device,L"data/default_tree.png");if(FAILED(hr)) return false;
+	hr = m_texs[SKYBOX_DAWN]->Initialize(device, L"data/skybox1_dawn.png"); if (FAILED(hr)) return false;
+	hr = m_texs[TREE]->Initialize(device, L"data/default_tree.png"); if (FAILED(hr)) return false;
 	hr = m_texs[STONE		]->Initialize(device,L"data/default_stone.png");if(FAILED(hr)) return false;
 	hr = m_texs[GRAVEL		]->Initialize(device,L"data/default_gravel.png");if(FAILED(hr)) return false;
 	hr = m_texs[CLAY		]->Initialize(device,L"data/default_clay.png");if(FAILED(hr)) return false;

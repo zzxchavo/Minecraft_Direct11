@@ -51,8 +51,11 @@ HRESULT EffectManager::AddEffect(ID3D11Device* device, ID3D11DeviceContext* cont
 HRESULT EffectManager::Render(ID3D11Device* device, ID3D11DeviceContext* context, ID3D11DepthStencilView* depthstencil, ID3D11ShaderResourceView* tSRV)
 {
 	HRESULT hr = S_OK;
-	if (vec.size() == 0) return S_OK;
-	vec[0]->UseEffect(device,context,depthstencil,tSRV);
+	if (vec.size() == 0)
+	{
+		return S_OK;
+	}
+	vec[0]->UseEffect(device, context, depthstencil, tSRV);
 	for (int i = 1;i < vec.size(); i++)
 	{
 		vec[i]->UseEffect(device,context,depthstencil,vec[i-1]->GetShaderResourceView());

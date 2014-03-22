@@ -10,10 +10,10 @@ PickingClass::~PickingClass()
 {
 }
 
-HRESULT PickingClass::UpdateRay(InputClass* input,CameraClass* camera)
+HRESULT PickingClass::UpdateRay(int pickx,int picky,CameraClass* camera)
 {
 	HRESULT hr = S_OK;
-	float mousex = input->GetMouseX(),mousey = input->GetMouseY();
+	float mousex = 1.0f * pickx, mousey = 1.0f * pickx;
 	D3DXMATRIX projection = camera->GetProjectionMatrix();
 	D3DXMATRIX view = camera->GetViewMatrix();
 	D3DXMATRIX world = camera->GetWorldMatrix();

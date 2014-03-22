@@ -37,6 +37,12 @@
     <Filter Include="源文件\Effect">
       <UniqueIdentifier>{b5d065cd-5a0f-4825-96ce-c777bcd10a6f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\Model">
+      <UniqueIdentifier>{a349612b-85c1-4993-af72-8e6510a7a591}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Model">
+      <UniqueIdentifier>{bd6439ba-e86e-43c4-8989-e777df942308}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\BlockClass.cpp">
@@ -155,6 +161,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\PickingClass.cpp">
       <Filter>源文件\Logic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\GBY%27sMC\MCmain\MCmain\ModelClass.cpp">
+      <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -286,6 +295,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\PickingClass.h">
       <Filter>头文件\Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\GBY%27sMC\MCmain\MCmain\ModelClass.h">
+      <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
